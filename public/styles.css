@@ -1,0 +1,380 @@
+/* ==========================================
+   1. RESET Y VARIABLES GLOBALES
+   ========================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e8e8e8;
+    --gray-300: #d4d4d4;
+    --gray-400: #9a9a9a;
+    --gray-500: #6b6b6b;
+    --gray-600: #4a4a4a;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 700; }
+em { font-style: italic; font-weight: 400; }
+button { cursor: pointer; font-family: var(--font-sans); }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ==========================================
+   2. HEADER Y NAVEGACIÓN
+   ========================================== */
+.header { position: fixed; top: 0; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--gray-200); z-index: 100; }
+.header-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: var(--font-serif); font-size: 20px; font-weight: 700; background: none; border: none; color: var(--black); }
+.nav-desktop { display: flex; gap: 32px; }
+.nav-link { background: none; border: none; font-size: 14px; font-weight: 500; color: var(--gray-500); padding-bottom: 2px; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.nav-link:hover { color: var(--black); }
+.nav-link.active { color: var(--black); border-bottom-color: var(--black); }
+.header-right { display: flex; gap: 12px; align-items: center; }
+
+.btn-login-nav { background: none; border: 1px solid var(--gray-300); color: var(--gray-500); font-size: 14px; padding: 8px 16px; border-radius: 4px; transition: all 0.2s; }
+.btn-login-nav:hover { border-color: var(--black); color: var(--black); }
+
+.btn-mi-cuenta { background: var(--black); color: var(--white); border: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 4px; transition: background 0.2s; }
+.btn-mi-cuenta:hover { background: var(--gray-500); }
+
+.btn-logout-nav { background: none; border: 1px solid #dc3545; color: #dc3545; font-size: 14px; padding: 8px 16px; border-radius: 4px; transition: all 0.2s; }
+.btn-logout-nav:hover { background: #dc3545; color: white; }
+
+.btn-agendar-nav { background: var(--black); color: var(--white); border: none; padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 4px; transition: background 0.2s; }
+.btn-agendar-nav:hover { background: var(--gray-500); }
+
+.menu-toggle { display: none; background: none; border: none; font-size: 22px; color: var(--black); }
+.menu-mobile { display: none; flex-direction: column; padding: 16px 24px; gap: 12px; border-top: 1px solid var(--gray-200); background: var(--white); }
+.menu-mobile.active { display: flex; }
+
+/* ==========================================
+   3. AVISO DE LOGIN
+   ========================================== */
+.aviso-login { background: linear-gradient(90deg, #000 0%, #1a1a1a 100%); color: var(--white); padding: 14px 24px; display: flex; justify-content: center; align-items: center; position: fixed; top: 64px; left: 0; right: 0; z-index: 90; }
+.aviso-contenido { display: flex; align-items: center; gap: 16px; max-width: 1200px; font-size: 14px; }
+.aviso-icono { font-size: 20px; }
+.aviso-contenido a { color: #4ade80; text-decoration: underline; font-weight: 600; }
+.aviso-cerrar { background: none; border: none; color: var(--white); font-size: 16px; cursor: pointer; position: absolute; right: 24px; opacity: 0.7; }
+.aviso-cerrar:hover { opacity: 1; }
+
+/* ==========================================
+   4. PÁGINAS Y ESTRUCTURA BASE
+   ========================================== */
+.page { display: none; padding-top: 64px; min-height: 100vh; }
+.page.active { display: block; }
+.section-subtitulo { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 12px; }
+.section-titulo { font-size: 36px; font-weight: 700; }
+
+/* ==========================================
+   5. BOTONES GENERALES
+   ========================================== */
+.btn-primary { background: var(--black); color: var(--white); padding: 16px 32px; border: none; font-size: 14px; font-weight: 500; border-radius: 4px; transition: background 0.2s; }
+.btn-primary:hover { background: var(--gray-500); }
+.btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-secondary { background: none; border: 1px solid var(--black); color: var(--black); padding: 16px 32px; font-size: 14px; font-weight: 500; border-radius: 4px; transition: all 0.2s; }
+.btn-secondary:hover { background: var(--black); color: var(--white); }
+.btn-volver { background: none; border: none; color: var(--gray-500); font-size: 14px; margin-bottom: 16px; cursor: pointer; }
+.btn-volver:hover { color: var(--black); }
+
+/* ==========================================
+   6. HERO SECTION (INICIO)
+   ========================================== */
+.hero { border-bottom: 1px solid var(--gray-200); }
+.hero-container { max-width: 1280px; margin: 0 auto; padding: 96px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.hero-subtitulo { font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 24px; }
+.hero-titulo { font-size: 72px; font-weight: 900; line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 32px; }
+.hero-descripcion { font-size: 16px; color: var(--gray-500); line-height: 1.7; max-width: 400px; margin-bottom: 40px; }
+.hero-buttons { display: flex; gap: 16px; }
+.hero-image { position: relative; aspect-ratio: 3/4; background: var(--gray-100); }
+.hero-image-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.circulo-icono { width: 128px; height: 128px; border: 2px solid var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--gray-300); margin-bottom: 16px; }
+.texto-foto { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-300); }
+
+/* ==========================================
+   7. SERVICIOS PREVIEW
+   ========================================== */
+.services-preview { padding: 80px 24px; max-width: 1280px; margin: 0 auto; }
+.services-header { margin-bottom: 48px; }
+.services-grid-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray-200); }
+.service-preview-card { background: var(--white); padding: 32px; }
+.service-categoria { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); display: block; margin-bottom: 16px; }
+.service-nombre { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.service-footer { display: flex; justify-content: space-between; align-items: center; }
+.service-precio { font-family: var(--font-serif); font-size: 24px; font-weight: 900; }
+.service-duracion { font-size: 12px; color: var(--gray-400); }
+
+/* ==========================================
+   8. CATÁLOGO
+   ========================================== */
+.catalogo-container { max-width: 1280px; margin: 0 auto; padding: 64px 24px; }
+.catalogo-titulo { font-size: 48px; font-weight: 900; margin-bottom: 32px; }
+.filtros { display: flex; gap: 8px; margin-bottom: 48px; flex-wrap: wrap; }
+.filtro { background: none; border: 1px solid var(--gray-300); color: var(--gray-500); font-size: 12px; padding: 8px 16px; text-transform: uppercase; border-radius: 20px; transition: all 0.2s; }
+.filtro:hover { border-color: var(--black); color: var(--black); }
+.filtro.activo { background: var(--black); color: var(--white); border-color: var(--black); }
+.catalogo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray-200); }
+.catalogo-card { background: var(--white); padding: 32px; display: flex; flex-direction: column; }
+.catalogo-card-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+.catalogo-categoria { font-size: 12px; text-transform: uppercase; color: var(--gray-400); }
+.catalogo-duracion { font-size: 12px; color: var(--gray-400); background: var(--gray-100); padding: 4px 8px; border-radius: 4px; }
+.catalogo-nombre { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+.catalogo-footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--gray-100); display: flex; justify-content: space-between; align-items: center; }
+.catalogo-precio { font-family: var(--font-serif); font-size: 30px; font-weight: 900; }
+.catalogo-card button { background: none; border: 1px solid var(--black); color: var(--black); font-size: 12px; padding: 8px 16px; border-radius: 4px; transition: all 0.2s; }
+.catalogo-card button:hover { background: var(--black); color: var(--white); }
+
+/* ==========================================
+   9. SERVICIOS CLÍNICOS
+   ========================================== */
+.servicios-container { max-width: 1280px; margin: 0 auto; padding: 64px 24px; }
+.servicios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray-200); }
+.servicio-card { background: var(--white); padding: 40px; }
+.servicio-num { font-family: var(--font-serif); font-size: 60px; font-weight: 900; color: var(--gray-100); display: block; margin-bottom: 16px; }
+.servicio-titulo { font-size: 24px; font-weight: 700; margin-bottom: 16px; }
+.servicio-desc { font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-bottom: 24px; }
+.servicio-lista { list-style: none; }
+.servicio-lista li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gray-500); margin-bottom: 8px; }
+.servicio-lista li::before { content: ''; width: 4px; height: 4px; background: var(--black); border-radius: 50%; flex-shrink: 0; }
+
+/* ==========================================
+   10. AGENDA Y CALENDARIO
+   ========================================== */
+.agenda-container { max-width: 1280px; margin: 0 auto; padding: 64px 24px; }
+.agenda-mode { display: none; }
+.agenda-mode.active { display: block; }
+.agenda-desc { font-size: 14px; color: var(--gray-500); max-width: 400px; margin-bottom: 40px; }
+
+.calendario-container { max-width: 700px; margin: 40px 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.calendario-header h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 700; }
+.calendario-header button { background: none; border: 1px solid var(--gray-300); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.calendario-header button:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+.calendario-dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px; text-align: center; }
+.calendario-dias-semana span { font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+.calendario-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.dia-cal { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; position: relative; border: 2px solid transparent; }
+.dia-cal:hover:not(.vacio):not(.pasado) { background: var(--gray-100); }
+.dia-cal.vacio { cursor: default; opacity: 0; }
+.dia-cal.pasado { color: var(--gray-300); cursor: not-allowed; opacity: 0.5; }
+.dia-cal.disponible { background: var(--white); color: var(--black); border-color: var(--gray-200); }
+.dia-cal.disponible:hover { border-color: var(--black); }
+.dia-cal.seleccionado { background: var(--black); color: var(--white); border-color: var(--black); }
+.dia-cal .punto { position: absolute; bottom: 6px; width: 6px; height: 6px; border-radius: 50%; background: #28a745; }
+.dia-cal.seleccionado .punto { background: var(--white); }
+
+.panel-disponibilidad { max-width: 900px; margin-top: 40px; padding: 32px; background: var(--gray-50); border-radius: 12px; border: 1px solid var(--gray-200); }
+.panel-disponibilidad h2 { font-family: var(--font-serif); font-size: 24px; margin-bottom: 24px; }
+.especialista-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+.especialista-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.especialista-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--black); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 20px; font-weight: 700; }
+.especialista-info h3 { font-size: 18px; margin-bottom: 4px; }
+.especialista-info p { font-size: 12px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+.horarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+.horario-btn { padding: 12px 8px; border: 1px solid var(--gray-300); background: var(--white); border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.horario-btn:hover:not(.ocupado) { background: var(--black); color: var(--white); border-color: var(--black); }
+.horario-btn.ocupado { background: var(--gray-100); color: var(--gray-300); cursor: not-allowed; text-decoration: line-through; }
+.horario-btn.seleccionado { background: var(--black); color: var(--white); border-color: var(--black); }
+
+.confirmacion { text-align: center; padding: 64px 24px; }
+.confirmacion-icono { width: 64px; height: 64px; border: 2px solid var(--black); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 32px; border-radius: 50%; }
+.confirmacion h2 { font-size: 32px; margin-bottom: 16px; }
+.confirmacion p { font-size: 14px; color: var(--gray-500); margin-bottom: 32px; }
+
+/* ==========================================
+   11. LOGIN Y REGISTRO
+   ========================================== */
+.login-container { min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; background: var(--gray-50); padding: 24px; }
+.login-box { background: var(--white); padding: 48px; border: 1px solid var(--gray-200); max-width: 420px; width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.registro-box { max-width: 500px; }
+.login-titulo { font-size: 32px; margin-bottom: 8px; }
+.login-subtitulo { font-size: 14px; color: var(--gray-400); margin-bottom: 32px; }
+.login-hint { margin-top: 24px; padding: 16px; background: var(--gray-50); border: 1px solid var(--gray-200); font-size: 12px; line-height: 1.8; border-radius: 8px; }
+.login-footer { text-align: center; margin-top: 24px; font-size: 13px; color: var(--gray-500); }
+.login-footer a { color: var(--black); text-decoration: underline; font-weight: 500; }
+
+.btn-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; background: white; border: 1px solid var(--gray-300); color: var(--black); padding: 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
+.btn-google:hover { background: var(--gray-50); border-color: var(--gray-400); }
+.separador { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: var(--gray-400); font-size: 12px; }
+.separador::before, .separador::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+.form-checkbox { display: flex; align-items: flex-start; gap: 10px; margin: 20px 0; font-size: 13px; color: var(--gray-500); line-height: 1.5; }
+.form-checkbox input[type="checkbox"] { width: auto; margin-top: 3px; accent-color: var(--black); cursor: pointer; flex-shrink: 0; }
+.form-checkbox label { cursor: pointer; font-size: 13px; text-transform: none; color: var(--gray-500); letter-spacing: 0; }
+.form-checkbox a { color: var(--black); text-decoration: underline; font-weight: 500; }
+
+/* ==========================================
+   12. FORMULARIOS GENERALES
+   ========================================== */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 12px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 8px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; border: 1px solid var(--gray-300); padding: 12px 16px; font-size: 14px; font-family: var(--font-sans); border-radius: 4px; background: var(--white); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--black); }
+.form-group textarea { resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* ==========================================
+   13. DASHBOARDS (CLIENTE, EMPLEADO, ADMIN)
+   ========================================== */
+.dashboard-container { max-width: 1280px; margin: 0 auto; padding: 48px 24px; }
+.dashboard-header { display: flex; justify-content: space-between; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--gray-200); }
+.dashboard-titulo { font-size: 36px; margin-bottom: 4px; }
+.dashboard-sucursal { font-size: 14px; color: var(--gray-400); }
+.btn-logout { background: none; border: 1px solid var(--black); color: var(--black); padding: 10px 20px; font-size: 13px; border-radius: 4px; transition: all 0.2s; }
+.btn-logout:hover { background: var(--black); color: var(--white); }
+.dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 48px; }
+.stat-card { background: var(--white); border: 1px solid var(--gray-200); padding: 24px; text-align: center; border-radius: 8px; }
+.stat-card .stat-num { font-family: var(--font-serif); font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+.stat-card .stat-label { font-size: 12px; text-transform: uppercase; color: var(--gray-400); }
+.dashboard-section-titulo { font-size: 22px; margin-bottom: 20px; margin-top: 32px; }
+
+.tabla-citas { background: var(--white); border: 1px solid var(--gray-200); overflow-x: auto; border-radius: 8px; }
+.tabla-citas table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabla-citas th { text-align: left; padding: 14px 20px; background: var(--gray-50); font-size: 12px; text-transform: uppercase; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); }
+.tabla-citas td { padding: 14px 20px; border-bottom: 1px solid var(--gray-100); }
+.badge { display: inline-block; padding: 4px 10px; font-size: 11px; text-transform: uppercase; font-weight: 600; border-radius: 4px; }
+.badge.pendiente { background: #fff3cd; color: #856404; }
+.badge.deposito_pagado, .badge.pagado { background: #d4edda; color: #155724; }
+.badge.cancelado, .badge.cancelada { background: #f8d7da; color: #721c24; }
+.sucursales-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.sucursal-card { background: var(--white); border: 1px solid var(--gray-200); padding: 24px; border-radius: 8px; }
+.sucursal-card h3 { font-size: 18px; margin-bottom: 16px; }
+.sucursal-card .sucursal-stat { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--gray-100); }
+.tabla-citas .btn-accion { background: none; border: 1px solid var(--gray-300); color: var(--gray-500); padding: 4px 10px; font-size: 11px; cursor: pointer; margin-right: 4px; border-radius: 4px; }
+.tabla-citas .btn-accion.cancelar { border-color: #dc3545; color: #dc3545; }
+.tabla-citas .btn-accion.cancelar:hover { background: #dc3545; color: white; }
+
+/* ==========================================
+   14. CMS (PANEL DE CONTROL WEB)
+   ========================================== */
+.cms-container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+.cms-header { margin-bottom: 32px; }
+.cms-titulo { font-family: var(--font-serif); font-size: 32px; margin-bottom: 8px; }
+.cms-subtitulo { color: var(--gray-500); font-size: 15px; }
+
+.cms-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
+
+.cms-sidebar { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.cms-menu-btn { background: transparent; border: none; text-align: left; padding: 14px 20px; font-size: 15px; font-weight: 500; color: var(--gray-500); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.cms-menu-btn:hover { background: var(--gray-50); color: var(--black); }
+.cms-menu-btn.active { background: var(--black); color: var(--white); }
+
+.cms-tab { display: none; }
+.cms-tab.active { display: block; animation: fadeIn 0.3s ease; }
+
+.cms-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.cms-card-header h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 700; }
+
+.cms-form-card { background: var(--gray-50); border: 1px solid var(--gray-200); padding: 32px; border-radius: 12px; margin-bottom: 32px; }
+.cms-form-card h3 { font-size: 18px; margin-bottom: 24px; font-weight: 700; }
+
+.cms-grid-servicios { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.cms-servicio-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.cms-servicio-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+.cms-card-body { padding: 24px; }
+.cms-card-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--black); }
+.cms-card-details { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.cms-price { font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--black); }
+.cms-card-actions { display: flex; border-top: 1px solid var(--gray-200); background: var(--gray-50); }
+.cms-card-actions button { flex: 1; border: none; background: none; padding: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-edit { color: #0284c7; border-right: 1px solid var(--gray-200) !important; }
+.btn-edit:hover { background: #e0f2fe; }
+.btn-delete { color: #dc2626; }
+.btn-delete:hover { background: #fee2e2; }
+
+/* ==========================================
+   15. MODALES (TÉRMINOS, DEPÓSITO, EDITAR)
+   ========================================== */
+.modal-terminos { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease; }
+.modal-terminos.activo { display: flex !important; }
+.modal-terminos-contenido { background: var(--white); border-radius: 12px; max-width: 700px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+.modal-terminos-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid var(--gray-200); }
+.modal-terminos-header h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 700; }
+.modal-terminos-header button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-400); transition: color 0.2s; }
+.modal-terminos-header button:hover { color: var(--black); }
+.modal-terminos-body { padding: 32px; overflow-y: auto; flex: 1; }
+.modal-terminos-body h3 { font-family: var(--font-serif); font-size: 16px; font-weight: 700; margin-top: 24px; margin-bottom: 8px; color: var(--black); }
+.modal-terminos-body h3:first-child { margin-top: 0; }
+.modal-terminos-body p { font-size: 14px; color: var(--gray-500); line-height: 1.7; margin-bottom: 12px; }
+.modal-terminos-body ul { margin: 12px 0 12px 20px; font-size: 14px; color: var(--gray-500); line-height: 1.7; }
+.modal-terminos-body ul li { margin-bottom: 6px; }
+.modal-terminos-body strong { color: var(--black); }
+.modal-terminos-fecha { font-size: 12px; color: var(--gray-400); font-style: italic; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+.modal-terminos-footer { padding: 16px 32px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; }
+.modal-terminos-footer button { padding: 12px 32px; }
+
+.modal-login { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.modal-contenido { background: var(--white); padding: 48px 40px; border-radius: 12px; max-width: 440px; width: 100%; text-align: center; position: relative; }
+.modal-icono { font-size: 48px; margin-bottom: 16px; }
+.modal-contenido h2 { font-family: var(--font-serif); font-size: 24px; margin-bottom: 12px; }
+.modal-contenido p { font-size: 14px; color: var(--gray-500); margin-bottom: 32px; line-height: 1.6; }
+.modal-botones { display: flex; flex-direction: column; gap: 12px; }
+.modal-botones button { width: 100%; }
+.modal-cerrar { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-400); }
+
+/* ==========================================
+   16. MENSAJES FLOTANTES
+   ========================================== */
+#mensaje { position: fixed; top: 120px; right: 30px; padding: 20px 30px; border-radius: 8px; display: none; z-index: 2500; font-size: 14px; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.exito { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+.error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+
+/* ==========================================
+   17. CHATBOT
+   ========================================== */
+.chatbot-container { position: fixed; bottom: 24px; right: 24px; z-index: 150; }
+.chatbot-toggle { width: 56px; height: 56px; background: var(--black); color: var(--white); border: none; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.chatbot-toggle:hover { background: var(--gray-500); }
+.chatbot-window { display: none; position: absolute; bottom: 72px; right: 0; width: 360px; background: var(--white); border: 1px solid var(--black); box-shadow: 0 10px 30px rgba(0,0,0,0.15); flex-direction: column; max-height: 500px; border-radius: 12px; overflow: hidden; }
+.chatbot-window.activo { display: flex; }
+.chatbot-header { background: var(--black); color: var(--white); padding: 12px 16px; display: flex; justify-content: space-between; font-size: 14px; }
+.chatbot-header button { background: none; border: none; color: var(--white); font-size: 20px; cursor: pointer; }
+.chatbot-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; max-height: 320px; }
+.chat-msg { display: flex; gap: 12px; }
+.chat-msg.user { justify-content: flex-end; }
+.chat-bubble { background: var(--white); border: 1px solid var(--gray-200); padding: 12px 16px; font-size: 14px; line-height: 1.5; max-width: 78%; white-space: pre-wrap; border-radius: 12px; }
+.chat-msg.user .chat-bubble { background: var(--black); color: var(--white); border-color: var(--black); }
+.chatbot-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--gray-200); }
+.chatbot-input input { flex: 1; border: 1px solid var(--gray-300); padding: 8px 12px; font-size: 13px; border-radius: 4px; }
+.chatbot-input button { background: var(--black); color: var(--white); border: none; padding: 8px 16px; font-size: 13px; border-radius: 4px; }
+
+/* ==========================================
+   18. FOOTER Y ANIMACIONES
+   ========================================== */
+.footer { text-align: center; padding: 40px; background: var(--black); color: var(--white); font-size: 12px; }
+.footer-links { display: flex; gap: 16px; margin-top: 12px; justify-content: center; }
+.footer-links a { font-size: 12px; color: var(--gray-400); text-decoration: underline; }
+.footer-links a:hover { color: var(--white); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ==========================================
+   19. RESPONSIVE (MÓVILES)
+   ========================================== */
+@media (max-width: 900px) {
+    .nav-desktop, .header-right .btn-login-nav, .header-right .btn-mi-cuenta, .header-right .btn-logout-nav { display: none !important; }
+    .menu-toggle { display: block; }
+    .hero-container { grid-template-columns: 1fr; padding: 48px 24px; }
+    .hero-titulo { font-size: 48px; }
+    .hero-image { display: none; }
+    .services-grid-preview, .catalogo-grid { grid-template-columns: 1fr; }
+    .servicios-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .chatbot-window { width: 90vw; right: 5vw; }
+    .registro-box .form-row { grid-template-columns: 1fr; }
+    
+    .cms-layout { grid-template-columns: 1fr; }
+    .cms-sidebar { flex-direction: row; overflow-x: auto; padding-bottom: 8px; }
+    .cms-menu-btn { white-space: nowrap; }
+}

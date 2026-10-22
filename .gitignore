@@ -1,0 +1,5 @@
+node_modules/
+salon.db
+.env
+*.log
+.DS_Store

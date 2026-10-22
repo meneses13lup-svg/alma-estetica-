@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alma Estética</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <button class="logo" onclick="navigate('inicio')">Alma Estética</button>
+            <nav class="nav-desktop">
+                <button class="nav-link" data-page="inicio" onclick="navigate('inicio')">Inicio</button>
+                <button class="nav-link" data-page="catalogo" onclick="navigate('catalogo')">Catálogo</button>
+                <button class="nav-link" data-page="servicios" onclick="navigate('servicios')">Servicios Clínicos</button>
+                <button class="nav-link" data-page="agenda" onclick="navigate('agenda')">Agenda</button>
+            </nav>
+            <div class="header-right">
+                <button class="btn-login-nav" id="btn-login-nav" onclick="navigate('login')">Iniciar Sesión</button>
+                <button class="btn-mi-cuenta" id="btn-mi-cuenta" onclick="irAMiCuenta()" style="display:none;">Mi Cuenta</button>
+                <button class="btn-logout-nav" id="btn-logout-nav" onclick="cerrarSesion()" style="display:none;">Cerrar Sesión</button>
+                <button class="btn-agendar-nav" id="btn-agendar-nav" onclick="irAAgenda()" style="display: none;">Agendar</button>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+        <div class="menu-mobile" id="menu-mobile">
+            <button class="nav-link" onclick="navigate('inicio'); toggleMenu()">Inicio</button>
+            <button class="nav-link" onclick="navigate('catalogo'); toggleMenu()">Catálogo</button>
+            <button class="nav-link" onclick="navigate('servicios'); toggleMenu()">Servicios Clínicos</button>
+            <button class="nav-link" onclick="navigate('agenda'); toggleMenu()">Agenda</button>
+        </div>
+    </header>
+
+    <!-- AVISO DE LOGIN -->
+    <div class="aviso-login" id="aviso-login">
+        <div class="aviso-contenido">
+            <span class="aviso-icono">🔒</span>
+            <p><strong>Ojo:</strong> Solo puedes reservar citas si inicias sesión. <a href="#" onclick="navigate('login'); return false;">Inicia sesión aquí</a> o <a href="#" onclick="navigate('registro'); return false;">crea una cuenta</a>.</p>
+            <button class="aviso-cerrar" onclick="cerrarAviso()">✕</button>
+        </div>
+    </div>
+
+    <!-- PÁGINA: INICIO -->
+    <main id="page-inicio" class="page active">
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-text">
+                    <p class="hero-subtitulo" id="txt-hero-subtitulo">ESTÉTICA FACIAL NO QUIRÚRGICA</p>
+                    <h1 class="hero-titulo" id="txt-hero-titulo">Tu belleza<br><em>y juventud,</em><br>redefinidas.</h1>
+                    <p class="hero-descripcion" id="txt-hero-descripcion">Especialistas en estética facial no quirúrgica. Botox, rejuvenecimiento, rellenos y más.</p>
+                    <div class="hero-buttons">
+                        <button class="btn-primary" onclick="navigate('catalogo')">Ver Catálogo</button>
+                        <button class="btn-secondary" onclick="irAAgenda()">Agendar Cita</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-placeholder">
+                        <div class="circulo-icono">👤</div>
+                        <p class="texto-foto">FOTO CLÍNICA</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="services-preview">
+            <div class="services-header">
+                <div>
+                    <p class="section-subtitulo">LO MÁS SOLICITADO</p>
+                    <h2 class="section-titulo">Nuestros Servicios</h2>
+                </div>
+            </div>
+            <div class="services-grid-preview" id="services-preview"></div>
+        </section>
+        <footer class="footer">
+            <p class="footer-logo">Alma Estética</p>
+            <p class="footer-copy">© 2026 Alma Estética. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#" onclick="abrirTerminos(); return false;">Términos y Condiciones</a>
+                <a href="#" onclick="abrirPrivacidad(); return false;">Aviso de Privacidad</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- PÁGINA: CATÁLOGO -->
+    <main id="page-catalogo" class="page">
+        <div class="catalogo-container">
+            <p class="section-subtitulo">PROCEDIMIENTOS DISPONIBLES</p>
+            <h1 class="catalogo-titulo">Catálogo</h1>
+            <div class="filtros" id="filtros">
+                <button class="filtro activo" data-categoria="Todos">Todos</button>
+                <button class="filtro" data-categoria="Facial">Facial</button>
+                <button class="filtro" data-categoria="Rellenos">Rellenos</button>
+                <button class="filtro" data-categoria="Regeneración">Regeneración</button>
+            </div>
+            <div class="catalogo-grid" id="catalogo-grid"></div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: SERVICIOS CLÍNICOS -->
+    <main id="page-servicios" class="page">
+        <div class="servicios-container">
+            <h1 class="catalogo-titulo">Servicios<br><em>Clínicos</em></h1>
+            <div class="servicios-grid" id="servicios-grid"></div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: AGENDA CON CALENDARIO -->
+    <main id="page-agenda" class="page">
+        <div class="agenda-container">
+            <div id="agenda-select" class="agenda-mode active">
+                <p class="section-subtitulo">PRIMERA CONSULTA GRATUITA</p>
+                <h1 class="catalogo-titulo">Agenda tu<br><em>Cita</em></h1>
+                <p class="agenda-desc">Selecciona el día, especialista y horario que prefieras.</p>
+
+                <div class="form-group" style="max-width: 300px;">
+                    <label>Sucursal</label>
+                    <select id="select-sucursal-cal" onchange="cargarCalendario()">
+                        <option value="">Todas las sucursales</option>
+                        <option value="1">Sucursal Centro</option>
+                        <option value="2">Sucursal Norte</option>
+                        <option value="3">Sucursal Sur</option>
+                    </select>
+                </div>
+
+                <div class="calendario-container">
+                    <div class="calendario-header">
+                        <button onclick="cambiarMes(-1)">◀</button>
+                        <h2 id="calendario-titulo">Septiembre 2026</h2>
+                        <button onclick="cambiarMes(1)">▶</button>
+                    </div>
+                    <div class="calendario-dias-semana">
+                        <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+                    </div>
+                    <div class="calendario-grid" id="calendario-grid"></div>
+                </div>
+
+                <div id="panel-disponibilidad" class="panel-disponibilidad" style="display: none;">
+                    <h2 id="fecha-seleccionada"></h2>
+                    <div id="especialistas-container"></div>
+                </div>
+            </div>
+
+            <div id="agenda-confirmacion" class="agenda-mode">
+                <div class="confirmacion">
+                    <div class="confirmacion-icono">✓</div>
+                    <h2>Cita Agendada</h2>
+                    <p id="confirmacion-texto"></p>
+                    <button class="btn-secondary" onclick="resetAgenda()">Agendar otra cita</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: LOGIN -->
+    <main id="page-login" class="page">
+        <div class="login-container">
+            <div class="login-box">
+                <h1 class="login-titulo">Iniciar Sesión</h1>
+                <p class="login-subtitulo">Accede a tu cuenta</p>
+                <form id="form-login">
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="login-email" required placeholder="jefa@alma.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="1234">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%">Entrar</button>
+                </form>
+                <p class="login-footer">¿No tienes cuenta? <a href="#" onclick="navigate('registro'); return false;">Crear cuenta nueva</a></p>
+                <div class="login-hint">
+                    <p><strong>Demo:</strong></p>
+                    <p>👩‍💼 Jefa: jefa@alma.com / 1234</p>
+                    <p>👩‍⚕️ Empleado: empleado@alma.com / 1234</p>
+                    <p>👨‍⚕️ Empleado 2: empleado2@alma.com / 1234</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: REGISTRO -->
+    <main id="page-registro" class="page">
+        <div class="login-container">
+            <div class="login-box registro-box">
+                <h1 class="login-titulo">Crear Cuenta</h1>
+                <p class="login-subtitulo">Regístrate para agendar tus citas</p>
+                <button type="button" class="btn-google" onclick="registroConGoogle()">
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continuar con Google
+                </button>
+                <div class="separador"><span>o regístrate con tu correo</span></div>
+                <form id="form-registro">
+                    <div class="form-row">
+                        <div class="form-group"><label>Nombre *</label><input type="text" id="reg-nombre" required placeholder="María"></div>
+                        <div class="form-group"><label>Apellido paterno *</label><input type="text" id="reg-apellido-paterno" required placeholder="García"></div>
+                    </div>
+                    <div class="form-group"><label>Apellido materno</label><input type="text" id="reg-apellido-materno" placeholder="López"></div>
+                    <div class="form-group"><label>Correo electrónico *</label><input type="email" id="reg-email" required placeholder="maria@ejemplo.com"></div>
+                    <div class="form-group"><label>Teléfono *</label><input type="tel" id="reg-telefono" required placeholder="5512345678" maxlength="10"></div>
+                    <div class="form-group"><label>Fecha de nacimiento *</label><input type="date" id="reg-fecha-nacimiento" required></div>
+                    <div class="form-group"><label>Contraseña * (mínimo 6 caracteres)</label><input type="password" id="reg-password" required minlength="6"></div>
+                    <div class="form-group"><label>Confirmar contraseña *</label><input type="password" id="reg-password-confirm" required minlength="6"></div>
+                    
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="acepto-terminos">
+                        <label for="acepto-terminos">
+                            Acepto los <a href="#" onclick="abrirTerminos(); return false;">Términos y Condiciones</a> y el 
+                            <a href="#" onclick="abrirPrivacidad(); return false;">Aviso de Privacidad</a>.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" style="width:100%">Crear Cuenta</button>
+                </form>
+                <p class="login-footer">¿Ya tienes cuenta? <a href="#" onclick="navigate('login'); return false;">Inicia sesión</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: DASHBOARD CLIENTE -->
+    <main id="page-dashboard-cliente" class="page">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <p class="section-subtitulo">MI CUENTA</p>
+                    <h1 class="dashboard-titulo">Hola, <span id="cli-nombre">-</span></h1>
+                    <p class="dashboard-sucursal">Historial de tus citas</p>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card"><p class="stat-num" id="cli-total">0</p><p class="stat-label">Citas Totales</p></div>
+                <div class="stat-card"><p class="stat-num" id="cli-pendientes">0</p><p class="stat-label">Pendientes</p></div>
+                <div class="stat-card"><p class="stat-num" id="cli-completadas">0</p><p class="stat-label">Completadas</p></div>
+                <div class="stat-card"><p class="stat-num" id="cli-gastado">$0</p><p class="stat-label">Total Gastado</p></div>
+            </div>
+
+            <div style="margin: 24px 0; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="verHistorialTratamientos()" style="display: flex; align-items: center; gap: 8px;">
+                    📋 Ver Historial de Tratamientos
+                </button>
+                <button class="btn-secondary" onclick="irAAgenda()" style="display: flex; align-items: center; gap: 8px;">
+                    ➕ Agendar Nueva Cita
+                </button>
+            </div>
+
+            <h2 class="dashboard-section-titulo">Mis Citas</h2>
+            <div class="tabla-citas" id="cli-citas"></div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: DASHBOARD EMPLEADO -->
+    <main id="page-dashboard-empleado" class="page">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <p class="section-subtitulo">PANEL DE EMPLEADO</p>
+                    <h1 class="dashboard-titulo">Hola, <span id="emp-nombre">-</span></h1>
+                    <p class="dashboard-sucursal">Sucursal #<span id="emp-sucursal">-</span></p>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card"><p class="stat-num" id="emp-total">0</p><p class="stat-label">Citas Totales</p></div>
+                <div class="stat-card"><p class="stat-num" id="emp-pendientes">0</p><p class="stat-label">Pendientes</p></div>
+                <div class="stat-card"><p class="stat-num" id="emp-pagadas">0</p><p class="stat-label">Pagadas</p></div>
+            </div>
+            <h2 class="dashboard-section-titulo">Citas de mi Sucursal</h2>
+            <div class="tabla-citas" id="emp-citas"></div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: DASHBOARD ADMIN -->
+    <main id="page-dashboard-admin" class="page">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <p class="section-subtitulo">PANEL DE ADMINISTRACIÓN</p>
+                    <h1 class="dashboard-titulo">Hola, <span id="admin-nombre">-</span></h1>
+                    <p class="dashboard-sucursal">Vista general de todas las sucursales</p>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+            
+            <div style="margin: 24px 0;">
+                <button class="btn-primary" onclick="abrirGestorWeb()" style="font-size: 16px; padding: 12px 24px;">
+                    ⚙️ Administrar Página Web (CMS)
+                </button>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card"><p class="stat-num" id="admin-total">0</p><p class="stat-label">Citas Totales</p></div>
+                <div class="stat-card"><p class="stat-num" id="admin-pendientes">0</p><p class="stat-label">Pendientes</p></div>
+                <div class="stat-card"><p class="stat-num" id="admin-pagadas">0</p><p class="stat-label">Pagadas</p></div>
+                <div class="stat-card"><p class="stat-num" id="admin-ingresos">$0</p><p class="stat-label">Ingresos Totales</p></div>
+            </div>
+            <h2 class="dashboard-section-titulo">Resumen por Sucursal</h2>
+            <div class="sucursales-grid" id="admin-sucursales"></div>
+            <h2 class="dashboard-section-titulo">Últimas Citas</h2>
+            <div class="tabla-citas" id="admin-citas"></div>
+        </div>
+    </main>
+
+    <!-- PÁGINA: PANEL DE CONTROL WEB (CMS) -->
+    <main id="page-admin-cms" class="page">
+        <div class="cms-container">
+            <div class="cms-header">
+                <div>
+                    <button class="btn-volver" onclick="navigate('dashboard-admin'); cargarDashboardAdmin();">← Volver al Dashboard</button>
+                    <h1 class="cms-titulo">Gestión de la Página Web</h1>
+                    <p class="cms-subtitulo">Administra los servicios y textos de Alma Estética</p>
+                </div>
+            </div>
+
+            <div class="cms-layout">
+                <aside class="cms-sidebar">
+                    <button class="cms-menu-btn active" id="menu-btn-servicios" onclick="cambiarTabCMS('servicios')">
+                        💆‍♀️ Servicios y Precios
+                    </button>
+                    <button class="cms-menu-btn" id="menu-btn-textos" onclick="cambiarTabCMS('textos')">
+                        📝 Textos de la Página
+                    </button>
+                </aside>
+
+                <div class="cms-content">
+                    <!-- TAB SERVICIOS -->
+                    <div id="cms-tab-servicios" class="cms-tab active">
+                        <div class="cms-card-header">
+                            <h2>Lista de Servicios</h2>
+                            <button class="btn-primary" onclick="document.getElementById('form-add-servicio').style.display='block'">
+                                ➕ Nuevo Servicio
+                            </button>
+                        </div>
+
+                        <div id="form-add-servicio" class="cms-form-card" style="display: none;">
+                            <h3>Agregar Nuevo Servicio</h3>
+                            <form onsubmit="agregarNuevoServicio(event)">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nombre del Servicio</label>
+                                        <input type="text" id="new-serv-nombre" required placeholder="Ej: Masaje Relajante">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Precio (MXN)</label>
+                                        <input type="number" id="new-serv-precio" required placeholder="2500" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Duración (minutos)</label>
+                                        <input type="number" id="new-serv-duracion" required placeholder="45" min="1">
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                    <button type="submit" class="btn-primary">Guardar Servicio</button>
+                                    <button type="button" class="btn-secondary" onclick="document.getElementById('form-add-servicio').style.display='none'">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="cms-grid-servicios" id="admin-lista-servicios"></div>
+                    </div>
+
+                    <!-- TAB TEXTOS -->
+                    <div id="cms-tab-textos" class="cms-tab">
+                        <div class="cms-card-header">
+                            <h2>Textos de la Página Principal</h2>
+                        </div>
+                        <div class="cms-form-card" style="display: block;">
+                            <form id="form-edit-textos" onsubmit="guardarTextosWeb(event)">
+                                <div class="form-group">
+                                    <label>Subtítulo (Arriba del título grande)</label>
+                                    <input type="text" id="cfg-hero_subtitulo" placeholder="Ej: ESTÉTICA FACIAL NO QUIRÚRGICA">
+                                </div>
+                                <div class="form-group">
+                                    <label>Título Principal (Puedes usar &lt;br&gt; para saltos de línea y &lt;em&gt; para cursiva)</label>
+                                    <textarea id="cfg-hero_titulo" rows="3" placeholder="Tu belleza<br><em>y juventud,</em><br>redefinidas."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Descripción (Debajo del título)</label>
+                                    <textarea id="cfg-hero_descripcion" rows="3" placeholder="Especialistas en estética facial..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary" style="margin-top: 16px;">Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MENSAJE FLOTANTE -->
+    <div id="mensaje"></div>
+
+    <!-- CHATBOT FLOTANTE -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" id="chatbot-toggle">💬</button>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <span>Asistente Virtual</span>
+                <button id="chatbot-close">×</button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chat-msg bot"><div class="chat-bubble">¡Hola! ¿En qué puedo ayudarte?</div></div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje...">
+                <button id="chatbot-send">→</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRMACIÓN GENERAL -->
+    <div id="modal-confirmacion" class="modal-terminos">
+        <div class="modal-terminos-contenido" style="max-width: 400px;">
+            <div class="modal-terminos-header">
+                <h2 id="confirm-titulo">¿Estás segura?</h2>
+                <button onclick="cerrarConfirmacion()">✕</button>
+            </div>
+            <div class="modal-terminos-body" style="text-align: center; padding: 40px 32px;">
+                <div style="font-size: 48px; margin-bottom: 16px;" id="confirm-icono">⚠️</div>
+                <p id="confirm-mensaje" style="font-size: 15px; color: var(--gray-600); margin-bottom: 0;">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-terminos-footer" style="justify-content: center; gap: 12px;">
+                <button class="btn-secondary" onclick="cerrarConfirmacion()">Cancelar</button>
+                <button class="btn-primary" id="btn-confirmar-accion" style="background: #dc3545;">Sí, continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: SELECCIONAR SERVICIO Y EDAD -->
+    <div id="modal-reserva" class="modal-terminos">
+        <div class="modal-terminos-contenido" style="max-width: 500px;">
+            <div class="modal-terminos-header">
+                <h2>Detalles de tu Cita</h2>
+                <button onclick="cerrarModalReserva()">✕</button>
+            </div>
+            <div class="modal-terminos-body">
+                <p style="font-size: 14px; color: var(--gray-500); margin-bottom: 24px;">
+                    Estás agendando con <strong id="reserva-empleado"></strong> a las <strong id="reserva-hora"></strong>.
+                </p>
+
+                <div class="form-group">
+                    <label>Selecciona el Tratamiento</label>
+                    <select id="reserva-servicio" required>
+                        <option value="">-- Elige un servicio --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tu Edad</label>
+                    <input type="number" id="reserva-edad" min="1" max="100" required placeholder="Ej: 25">
+                    <small style="color: #888; font-size: 11px; margin-top: 4px; display: block;">Recuerda que para Botox debes ser mayor de 18 años.</small>
+                </div>
+            </div>
+            <div class="modal-terminos-footer" style="gap: 12px;">
+                <button class="btn-secondary" onclick="cerrarModalReserva()">Cancelar</button>
+                <button class="btn-primary" onclick="confirmarReserva()">Continuar al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PERSONALIZADO PARA EDITAR SERVICIOS -->
+    <div id="modal-editar" class="modal-terminos">
+        <div class="modal-terminos-contenido" style="max-width: 450px;">
+            <div class="modal-terminos-header">
+                <h2 id="modal-edit-titulo">Editar Servicio</h2>
+                <button onclick="cerrarModalEditar()">✕</button>
+            </div>
+            <div class="modal-terminos-body">
+                <form id="form-editar-servicio" onsubmit="guardarEdicionServicio(event)">
+                    <input type="hidden" id="edit-serv-id">
+                    
+                    <div class="form-group">
+                        <label>Nombre del Servicio</label>
+                        <input type="text" id="edit-serv-nombre" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio (MXN)</label>
+                            <input type="number" id="edit-serv-precio" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Duración (minutos)</label>
+                            <input type="number" id="edit-serv-duracion" required min="1">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-terminos-footer" style="gap: 12px;">
+                <button class="btn-secondary" onclick="cerrarModalEditar()">Cancelar</button>
+                <button class="btn-primary" onclick="document.getElementById('form-editar-servicio').requestSubmit()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DEPÓSITO CON MERCADO PAGO -->
+    <div id="modal-deposito" class="modal-terminos">
+        <div class="modal-terminos-contenido" style="max-width: 500px;">
+            <div class="modal-terminos-header">
+                <h2>💳 Depósito del 20%</h2>
+                <button onclick="cerrarDeposito()">✕</button>
+            </div>
+            <div class="modal-terminos-body">
+                <p style="text-align:center; font-size: 15px; margin-bottom: 24px;">
+                    Para confirmar tu cita, se requiere un depósito del <strong>20%</strong> del tratamiento.
+                </p>
+
+                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Tratamiento:</span>
+                        <span id="dep-servicio" style="font-weight: 600;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Precio total:</span>
+                        <span id="dep-total" style="font-weight: 600;">$0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--gray-200); padding-top: 12px; margin-top: 12px;">
+                        <span style="font-weight: 700;">Depósito requerido:</span>
+                        <span id="dep-monto" style="font-weight: 700; color: #28a745; font-size: 18px;">$0</span>
+                    </div>
+                </div>
+
+                <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 13px;">
+                    💳 Serás redirigido a <strong>Mercado Pago</strong> para completar el pago de forma segura.
+                </div>
+            </div>
+            <div class="modal-terminos-footer" style="gap: 12px;">
+                <button class="btn-secondary" onclick="cerrarDeposito()">Cancelar</button>
+                <button class="btn-primary" onclick="confirmarDeposito()">Pagar con Mercado Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TÉRMINOS Y CONDICIONES -->
+    <div id="modal-terminos" class="modal-terminos">
+        <div class="modal-terminos-contenido">
+            <div class="modal-terminos-header">
+                <h2>Términos y Condiciones</h2>
+                <button onclick="cerrarTerminos()">✕</button>
+            </div>
+            <div class="modal-terminos-body">
+                <h3>1. Aceptación de los términos</h3>
+                <p>Al registrarte y utilizar los servicios de Alma Estética, aceptas los presentes Términos y Condiciones.</p>
+                <h3>2. Registro de usuario</h3>
+                <p>Para agendar una cita es necesario crear una cuenta con información verídica.</p>
+                <h3>3. Gestión de citas</h3>
+                <p>Las cancelaciones deben realizarse con al menos 24 horas de anticipación.</p>
+                <h3>4. Depósito del 20%</h3>
+                <p>Para confirmar una cita, se requiere un depósito del 20% del total. Es reembolsable si se cancela con 24 horas de anticipación.</p>
+                <h3>5. Procesamiento de pagos</h3>
+                <p>Los pagos son procesados por <strong>Mercado Pago</strong>. Alma Estética no almacena información de tarjetas.</p>
+                <p class="modal-terminos-fecha">Última actualización: Octubre 2026</p>
+            </div>
+            <div class="modal-terminos-footer">
+                <button class="btn-primary" onclick="cerrarTerminos()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: AVISO DE PRIVACIDAD -->
+    <div id="modal-privacidad" class="modal-terminos">
+        <div class="modal-terminos-contenido">
+            <div class="modal-terminos-header">
+                <h2>Aviso de Privacidad</h2>
+                <button onclick="cerrarPrivacidad()">✕</button>
+            </div>
+            <div class="modal-terminos-body">
+                <h3>Responsable del tratamiento</h3>
+                <p>Alma Estética es responsable del tratamiento de tus datos personales.</p>
+                <h3>Datos que recabamos</h3>
+                <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico</li>
+                    <li>Teléfono</li>
+                    <li>Fecha de nacimiento</li>
+                    <li>Historial de citas</li>
+                </ul>
+                <h3>Finalidad del tratamiento</h3>
+                <p>Gestión de citas, comunicación y envío de recordatorios.</p>
+                <p class="modal-terminos-fecha">Última actualización: Octubre 2026</p>
+            </div>
+            <div class="modal-terminos-footer">
+                <button class="btn-primary" onclick="cerrarPrivacidad()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

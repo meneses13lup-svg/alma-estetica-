@@ -1,0 +1,125 @@
+{
+    "servicios": {
+        "botox": {
+            "termino_estandar": "Botox Facial",
+            "precio": "$3,200",
+            "duracion": 30,
+            "variantes": ["botox", "toxina", "boto", "toxina botulinica", "relleno de arrugas", "botox facial", "toxina botulínica", "botox para arrugas", "inyeccion de botox"],
+            "descripcion": "El Botox Facial relaja los músculos para suavizar líneas de expresión y arrugas.",
+            "requisitos": "Mayoría de edad (18+)",
+            "efectos": "Resultados visibles en 3-7 días, duración de 4-6 meses"
+        },
+        "acido": {
+            "termino_estandar": "Ácido Hialurónico",
+            "precio": "$4,500",
+            "duracion": 45,
+            "variantes": ["acido", "acido hialuronico", "hialuronico", "relleno", "rellenito", "AH", "labios", "relleno de labios", "acido hialuronico para labios", "pomulos"],
+            "descripcion": "El Ácido Hialurónico restaura volumen y define labios, pómulos y mentón.",
+            "requisitos": "Mayoría de edad",
+            "efectos": "Resultados inmediatos, duración de 6-12 meses"
+        },
+        "bioestimulacion": {
+            "termino_estandar": "Bioestimulación",
+            "precio": "$2,800",
+            "duracion": 60,
+            "variantes": ["bioestimulacion", "bio", "colageno", "bioestimulador", "firmeza", "estimulacion de colageno", "bioestimulacion facial"],
+            "descripcion": "La Bioestimulación estimula el colágeno natural para piel más firme y luminosa.",
+            "requisitos": "Mayoría de edad",
+            "efectos": "Resultados graduales en 4-8 semanas, duración de 12-18 meses"
+        },
+        "lifting": {
+            "termino_estandar": "Lifting de Cejas",
+            "precio": "$2,200",
+            "duracion": 20,
+            "variantes": ["lifting", "lifting de cejas", "elevacion de cejas", "levantamiento de cejas"],
+            "descripcion": "Elevación no quirúrgica que rejuvenece y abre la mirada.",
+            "requisitos": "Mayoría de edad",
+            "efectos": "Resultados inmediatos, duración de 3-4 meses"
+        },
+        "mesoterapia": {
+            "termino_estandar": "Mesoterapia",
+            "precio": "$1,900",
+            "duracion": 45,
+            "variantes": ["mesoterapia", "meso", "vitaminas", "mesoterapia facial"],
+            "descripcion": "Cocktail de vitaminas y antioxidantes para revitalizar la piel.",
+            "requisitos": "Mayoría de edad",
+            "efectos": "Resultados visibles en 2-3 semanas"
+        },
+        "peeling": {
+            "termino_estandar": "Peeling Químico",
+            "precio": "$1,500",
+            "duracion": 50,
+            "variantes": ["peeling", "peeling quimico", "exfoliacion", "peeling facial"],
+            "descripcion": "Renovación celular para manchas, textura desigual y poros.",
+            "requisitos": "Mayoría de edad",
+            "efectos": "Resultados visibles en 7-10 días"
+        }
+    },
+    "intenciones": {
+        "agendar": {
+            "variantes": ["agendar", "cita", "apartar", "reservar", "turno", "hora", "espacio", "pedir cita", "hacer cita", "quiero ir", "me interesa", "quiero una cita", "necesito cita", "agendar cita", "quiero agendar", "puedo agendar", "me gustaria agendar", "quiero apartar"]
+        },
+        "cancelar": {
+            "variantes": ["cancelar", "anular", "quitar cita", "ya no puedo", "no podre ir", "cancelar cita", "eliminar cita"]
+        },
+        "reagendar": {
+            "variantes": ["reagendar", "cambiar cita", "mover cita", "reprogramar", "cambiar fecha", "otra fecha", "cambiar hora"]
+        },
+        "consultar_precio": {
+            "variantes": ["precio", "costo", "cuanto", "cuánto", "vale", "cuesta", "tarifa", "cuanto cuesta", "que precio", "precios", "costo de", "precio de"]
+        },
+        "consultar_servicio": {
+            "variantes": ["que es", "qué es", "informacion", "información", "sirve", "funciona", "como", "cómo", "duele", "es seguro", "que tal es", "duda", "dudas", "pregunta", "tratamiento", "tratamientos", "servicios", "servicio", "que tienen", "que ofrecen", "que manejan", "me interesa saber", "quisiera saber", "quiero saber", "mas informacion", "más información"]
+        },
+        "consultar_duracion": {
+            "variantes": ["cuanto dura", "cuánto dura", "duracion", "duración", "cuanto tiempo", "tiempo de", "cuanto tarda"]
+        },
+        "consultar_requisitos": {
+            "variantes": ["requisitos", "necesito", "que necesito", "que se requiere", "edad", "mayor de edad", "menor de edad", "contraindicaciones", "puedo si"]
+        },
+        "saludo": {
+            "variantes": ["hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", "que tal", "hey", "holi", "saludos", "buen dia", "que onda", "holaa"]
+        },
+        "despedida": {
+            "variantes": ["adios", "adiós", "bye", "hasta luego", "nos vemos", "gracias", "chao", "hasta pronto", "me voy", "nos vemos luego"]
+        },
+        "confirmacion": {
+            "variantes": ["si", "sí", "claro", "ok", "okay", "vale", "perfecto", "esta bien", "está bien", "de acuerdo", "afirmativo", "asi es", "correcto", "si por favor"]
+        },
+        "negacion": {
+            "variantes": ["no", "nel", "para nada", "no gracias", "no por ahora", "no me interesa", "despues", "después"]
+        },
+        "agradecimiento": {
+            "variantes": ["gracias", "muchas gracias", "te lo agradezco", "gracias por todo"]
+        }
+    },
+    "sucursales": {
+        "centro": ["centro", "sucursal centro", "la centro"],
+        "norte": ["norte", "sucursal norte", "la norte"],
+        "sur": ["sur", "sucursal sur", "la sur"]
+    },
+    "fechas": {
+        "hoy": ["hoy", "el dia de hoy"],
+        "mañana": ["mañana", "manana", "el dia de mañana"],
+        "pasado_mañana": ["pasado mañana", "pasado manana"],
+        "lunes": ["lunes", "el lunes"],
+        "martes": ["martes", "el martes"],
+        "miercoles": ["miercoles", "miércoles", "el miercoles"],
+        "jueves": ["jueves", "el jueves"],
+        "viernes": ["viernes", "el viernes"],
+        "sabado": ["sabado", "sábado", "el sabado"],
+        "domingo": ["domingo", "el domingo"],
+        "semana": ["esta semana", "la proxima semana", "proxima semana", "próxima semana"]
+    },
+    "emociones": {
+        "frustracion": ["no entiendes", "no me ayudas", "que mal", "estoy molesta", "estoy molesto", "harto", "harta"],
+        "urgencia": ["urgente", "rapido", "rápido", "lo antes posible", "cuanto antes", "ya"],
+        "miedo": ["me da miedo", "tengo miedo", "asusta", "duele mucho", "es peligroso", "es riesgoso"],
+        "entusiasmo": ["me encanta", "que padre", "excelente", "genial", "super", "súper", "increible", "increíble"]
+    },
+    "abreviaturas": {
+        "pa": "para", "x": "por", "k": "que", "q": "que", "dra": "doctora",
+        "suc": "sucursal", "xfa": "por favor", "porfa": "por favor", "plis": "por favor",
+        "tmb": "tambien", "tb": "tambien", "porq": "porque", "pq": "porque"
+    }
+}
