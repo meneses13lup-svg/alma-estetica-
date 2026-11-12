@@ -19,6 +19,7 @@
     "google-auth-library": "^11.1.0",
     "googleapis": "^183.0.0",
     "mercadopago": "^3.6.1",
+    "mysql2": "^3.24.6",
     "node-cron": "^4.6.0",
     "nodemailer": "^10.1.0",
     "sqlite3": "^6.0.1"

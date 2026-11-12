@@ -279,120 +279,16 @@
         </div>
     </main>
 
-    <!-- PÁGINA: DASHBOARD ADMIN -->
+    <!-- PÁGINA: DASHBOARD ADMIN (Panel de Héctor incrustado) -->
     <main id="page-dashboard-admin" class="page">
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <div>
-                    <p class="section-subtitulo">PANEL DE ADMINISTRACIÓN</p>
-                    <h1 class="dashboard-titulo">Hola, <span id="admin-nombre">-</span></h1>
-                    <p class="dashboard-sucursal">Vista general de todas las sucursales</p>
-                </div>
-                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+        <div style="width: 100%; height: 100vh; display: flex; flex-direction: column;">
+            <!-- Barra superior para regresar -->
+            <div style="background: var(--black); color: var(--white); padding: 15px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-family: var(--font-serif); font-size: 20px; margin: 0;">⚙️ Panel de Administración (CMS)</h2>
+                <button class="btn-secondary" onclick="navigate('inicio')" style="padding: 8px 16px; font-size: 13px; border-color: white; color: white;">← Volver a la Página</button>
             </div>
-            
-            <div style="margin: 24px 0;">
-                <button class="btn-primary" onclick="abrirGestorWeb()" style="font-size: 16px; padding: 12px 24px;">
-                    ⚙️ Administrar Página Web (CMS)
-                </button>
-            </div>
-
-            <div class="dashboard-stats">
-                <div class="stat-card"><p class="stat-num" id="admin-total">0</p><p class="stat-label">Citas Totales</p></div>
-                <div class="stat-card"><p class="stat-num" id="admin-pendientes">0</p><p class="stat-label">Pendientes</p></div>
-                <div class="stat-card"><p class="stat-num" id="admin-pagadas">0</p><p class="stat-label">Pagadas</p></div>
-                <div class="stat-card"><p class="stat-num" id="admin-ingresos">$0</p><p class="stat-label">Ingresos Totales</p></div>
-            </div>
-            <h2 class="dashboard-section-titulo">Resumen por Sucursal</h2>
-            <div class="sucursales-grid" id="admin-sucursales"></div>
-            <h2 class="dashboard-section-titulo">Últimas Citas</h2>
-            <div class="tabla-citas" id="admin-citas"></div>
-        </div>
-    </main>
-
-    <!-- PÁGINA: PANEL DE CONTROL WEB (CMS) -->
-    <main id="page-admin-cms" class="page">
-        <div class="cms-container">
-            <div class="cms-header">
-                <div>
-                    <button class="btn-volver" onclick="navigate('dashboard-admin'); cargarDashboardAdmin();">← Volver al Dashboard</button>
-                    <h1 class="cms-titulo">Gestión de la Página Web</h1>
-                    <p class="cms-subtitulo">Administra los servicios y textos de Alma Estética</p>
-                </div>
-            </div>
-
-            <div class="cms-layout">
-                <aside class="cms-sidebar">
-                    <button class="cms-menu-btn active" id="menu-btn-servicios" onclick="cambiarTabCMS('servicios')">
-                        💆‍♀️ Servicios y Precios
-                    </button>
-                    <button class="cms-menu-btn" id="menu-btn-textos" onclick="cambiarTabCMS('textos')">
-                        📝 Textos de la Página
-                    </button>
-                </aside>
-
-                <div class="cms-content">
-                    <!-- TAB SERVICIOS -->
-                    <div id="cms-tab-servicios" class="cms-tab active">
-                        <div class="cms-card-header">
-                            <h2>Lista de Servicios</h2>
-                            <button class="btn-primary" onclick="document.getElementById('form-add-servicio').style.display='block'">
-                                ➕ Nuevo Servicio
-                            </button>
-                        </div>
-
-                        <div id="form-add-servicio" class="cms-form-card" style="display: none;">
-                            <h3>Agregar Nuevo Servicio</h3>
-                            <form onsubmit="agregarNuevoServicio(event)">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Nombre del Servicio</label>
-                                        <input type="text" id="new-serv-nombre" required placeholder="Ej: Masaje Relajante">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Precio (MXN)</label>
-                                        <input type="number" id="new-serv-precio" required placeholder="2500" min="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Duración (minutos)</label>
-                                        <input type="number" id="new-serv-duracion" required placeholder="45" min="1">
-                                    </div>
-                                </div>
-                                <div style="display: flex; gap: 12px; margin-top: 16px;">
-                                    <button type="submit" class="btn-primary">Guardar Servicio</button>
-                                    <button type="button" class="btn-secondary" onclick="document.getElementById('form-add-servicio').style.display='none'">Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="cms-grid-servicios" id="admin-lista-servicios"></div>
-                    </div>
-
-                    <!-- TAB TEXTOS -->
-                    <div id="cms-tab-textos" class="cms-tab">
-                        <div class="cms-card-header">
-                            <h2>Textos de la Página Principal</h2>
-                        </div>
-                        <div class="cms-form-card" style="display: block;">
-                            <form id="form-edit-textos" onsubmit="guardarTextosWeb(event)">
-                                <div class="form-group">
-                                    <label>Subtítulo (Arriba del título grande)</label>
-                                    <input type="text" id="cfg-hero_subtitulo" placeholder="Ej: ESTÉTICA FACIAL NO QUIRÚRGICA">
-                                </div>
-                                <div class="form-group">
-                                    <label>Título Principal (Puedes usar &lt;br&gt; para saltos de línea y &lt;em&gt; para cursiva)</label>
-                                    <textarea id="cfg-hero_titulo" rows="3" placeholder="Tu belleza<br><em>y juventud,</em><br>redefinidas."></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Descripción (Debajo del título)</label>
-                                    <textarea id="cfg-hero_descripcion" rows="3" placeholder="Especialistas en estética facial..."></textarea>
-                                </div>
-                                <button type="submit" class="btn-primary" style="margin-top: 16px;">Guardar Cambios</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- El panel de Héctor incrustado -->
+            <iframe src="http://localhost/admin/indexAdmin.html" style="flex: 1; width: 100%; border: none;"></iframe>
         </div>
     </main>
 

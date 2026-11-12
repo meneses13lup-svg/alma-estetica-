@@ -55,10 +55,10 @@ function irAMiCuenta() {
     const usuario = obtenerSesion();
     if (!usuario) { navigate('login'); return; }
     
-    if (usuario.rol === 'admin') {
+    if (usuario.rol === 'admin' || usuario.rol === 'Administrador') {
         navigate('dashboard-admin');
         cargarDashboardAdmin();
-    } else if (usuario.rol === 'empleado') {
+    } else if (usuario.rol === 'empleado' || usuario.rol === 'Empleado') {
         navigate('dashboard-empleado');
         cargarDashboardEmpleado();
     } else {
@@ -142,19 +142,16 @@ function cerrarModal() {
     if (modal) modal.remove();
 }
 
-// MODAL DE CONFIRMACIÓN ELEGANTE (Reemplaza a confirm())
+// MODAL DE CONFIRMACIÓN ELEGANTE
 function mostrarConfirmacion(titulo, mensaje, icono, callback) {
     document.getElementById('confirm-titulo').textContent = titulo;
     document.getElementById('confirm-mensaje').textContent = mensaje;
     document.getElementById('confirm-icono').textContent = icono;
     
     const btn = document.getElementById('btn-confirmar-accion');
-    
-    // Remover eventos anteriores clonando el botón
     const newBtn = btn.cloneNode(true);
     btn.parentNode.replaceChild(newBtn, btn);
     
-    // Agregar el nuevo evento
     newBtn.addEventListener('click', () => {
         cerrarConfirmacion();
         callback();
@@ -518,7 +515,6 @@ document.getElementById('form-login')?.addEventListener('submit', (e) => {
             actualizarBotonLogin();
             mostrarMensaje('exito', `✅ Bienvenido/a, ${data.usuario.nombre}`);
             
-            // Verificamos si el usuario necesita vincular Google Calendar
             if (!data.tiene_google_calendar && data.usuario.rol === 'cliente') {
                 mostrarMensaje('exito', '⏳ Conectando con Google Calendar...');
                 vincularGoogleCalendarSilencioso(data.usuario.id_usuario);
@@ -562,17 +558,14 @@ document.getElementById('form-registro')?.addEventListener('submit', (e) => {
             guardarSesion(data.usuario);
             actualizarBotonLogin();
             mostrarMensaje('exito', `✅ ¡Bienvenido/a, ${data.usuario.nombre}!`);
-            
-            // Al registrarse, también lo mandamos a vincular Google Calendar
             mostrarMensaje('exito', '⏳ Conectando con Google Calendar...');
             vincularGoogleCalendarSilencioso(data.usuario.id_usuario);
         }
     });
 });
 
-// REGISTRO CON GOOGLE (Sin el prompt feo)
+// REGISTRO CON GOOGLE (Sin prompt)
 function registroConGoogle() {
-    // Simulamos que Google ya nos dio el correo
     const email = "usuario_google@almaestetica.com";
     const nombre = "Usuario Google";
 
@@ -589,8 +582,6 @@ function registroConGoogle() {
             guardarSesion(data.usuario);
             actualizarBotonLogin();
             mostrarMensaje('exito', `✅ Sesión iniciada con Google.`);
-            
-            // Lo mandamos directo a la pantalla real de permisos de Google Calendar
             mostrarMensaje('exito', '⏳ Conectando con Google Calendar...');
             vincularGoogleCalendarSilencioso(data.usuario.id_usuario);
         }
@@ -601,10 +592,9 @@ function registroConGoogle() {
     });
 }
 
-// Funciones de ayuda para el login
 function redirigirSegunRol(rol) {
-    if (rol === 'admin') { navigate('dashboard-admin'); cargarDashboardAdmin(); }
-    else if (rol === 'empleado') { navigate('dashboard-empleado'); cargarDashboardEmpleado(); }
+    if (rol === 'admin' || rol === 'Administrador') { navigate('dashboard-admin'); cargarDashboardAdmin(); }
+    else if (rol === 'empleado' || rol === 'Empleado') { navigate('dashboard-empleado'); cargarDashboardEmpleado(); }
     else { navigate('dashboard-cliente'); cargarDashboardCliente(); }
 }
 
@@ -612,7 +602,6 @@ function vincularGoogleCalendarSilencioso(idUsuario) {
     fetch(`${API_URL}/api/auth/google?id_usuario=${idUsuario}`)
         .then(res => res.json())
         .then(data => {
-            // Redirigimos al usuario a la pantalla de Google
             window.location.href = data.url;
         })
         .catch(err => {
@@ -631,7 +620,7 @@ document.getElementById('reg-telefono')?.addEventListener('input', (e) => {
 // ==========================================
 function cargarDashboardCliente() {
     const u = obtenerSesion();
-    if (!u || u.rol !== 'cliente') { navigate('login'); return; }
+    if (!u || (u.rol !== 'cliente' && u.rol !== 'Cliente')) { navigate('login'); return; }
     document.getElementById('cli-nombre').textContent = u.nombre;
     fetch(`${API_URL}/api/historial/${u.id_usuario}`)
         .then(res => res.json())
@@ -692,7 +681,7 @@ function verHistorialTratamientos() {
 
 function cargarDashboardEmpleado() {
     const u = obtenerSesion();
-    if (!u || u.rol !== 'empleado') { navigate('login'); return; }
+    if (!u || (u.rol !== 'empleado' && u.rol !== 'Empleado')) { navigate('login'); return; }
     document.getElementById('emp-nombre').textContent = u.nombre;
     document.getElementById('emp-sucursal').textContent = u.sucursal;
     fetch(`${API_URL}/api/dashboard/empleado/${u.id_usuario}`)
@@ -706,196 +695,18 @@ function cargarDashboardEmpleado() {
         });
 }
 
+// ==========================================
+// DASHBOARD ADMIN (Ahora muestra el iframe)
+// ==========================================
 function cargarDashboardAdmin() {
-    const u = obtenerSesion();
-    if (!u || u.rol !== 'admin') { navigate('login'); return; }
-    document.getElementById('admin-nombre').textContent = u.nombre;
-    fetch(`${API_URL}/api/dashboard/admin`)
-        .then(res => res.json())
-        .then(data => {
-            const { estadisticas, por_sucursal, citas } = data;
-            document.getElementById('admin-total').textContent = estadisticas.total_citas || 0;
-            document.getElementById('admin-pendientes').textContent = estadisticas.pendientes || 0;
-            document.getElementById('admin-pagadas').textContent = estadisticas.pagadas || 0;
-            const ing = (por_sucursal || []).reduce((s, x) => s + (x.ingresos_totales || 0), 0);
-            document.getElementById('admin-ingresos').textContent = `$${ing.toLocaleString()}`;
-            document.getElementById('admin-sucursales').innerHTML = (por_sucursal || []).map(s => `
-                <div class="sucursal-card">
-                    <h3>Sucursal #${s.id_sucursal}</h3>
-                    <div class="sucursal-stat"><span>Total citas</span><span>${s.total_citas}</span></div>
-                    <div class="sucursal-stat"><span>Ingresos</span><span>$${(s.ingresos_totales || 0).toLocaleString()}</span></div>
-                </div>`).join('');
-            document.getElementById('admin-citas').innerHTML = `<table><thead><tr><th>ID</th><th>Servicio</th><th>Sucursal</th><th>Fecha</th><th>Precio</th><th>Status</th></tr></thead><tbody>${(citas || []).map(c => `<tr><td>#${c.id_cita}</td><td>${c.servicio_nombre || 'N/A'}</td><td>#${c.id_sucursal || '-'}</td><td>${c.fecha_cita || '-'}</td><td>$${c.precio || 0}</td><td><span class="badge ${c.status_pago}">${c.status_pago}</span></td></tr>`).join('')}</tbody></table>`;
-        });
+    // Al ser un iframe, ya no necesitamos cargar datos aquí.
+    // El iframe se encarga de mostrar el panel de Héctor.
+    console.log("Cargando panel de administración (iframe de Héctor)...");
 }
 
-// ==========================================
-// CMS (PANEL DE CONTROL WEB)
-// ==========================================
 function abrirGestorWeb() {
-    navigate('admin-cms');
-    cargarServiciosAdmin();
-    cargarTextosWeb();
-}
-
-function cambiarTabCMS(tab) {
-    document.querySelectorAll('.cms-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.cms-menu-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`cms-tab-${tab}`).classList.add('active');
-    document.getElementById(`menu-btn-${tab}`).classList.add('active');
-}
-
-function cargarServiciosAdmin() {
-    fetch(`${API_URL}/api/servicios`)
-        .then(res => res.json())
-        .then(servicios => {
-            const lista = document.getElementById('admin-lista-servicios');
-            if (servicios.length === 0) {
-                lista.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">No hay servicios activos.</p>';
-                return;
-            }
-            lista.innerHTML = servicios.map(s => `
-                <div class="cms-servicio-card">
-                    <div class="cms-card-body">
-                        <h3>${s.nombre}</h3>
-                        <div class="cms-card-details">
-                            <span class="cms-price">$${s.precio}</span>
-                            <span class="cms-time">⏱ ${s.duracion} min</span>
-                        </div>
-                    </div>
-                    <div class="cms-card-actions">
-                        <button class="btn-edit" onclick="editarServicioAdmin(${s.id_servicio}, '${s.nombre}', ${s.precio}, ${s.duracion})">✏️ Editar</button>
-                        <button class="btn-delete" onclick="eliminarServicioAdmin(${s.id_servicio})">🗑️ Borrar</button>
-                    </div>
-                </div>
-            `).join('');
-        });
-}
-
-function editarServicioAdmin(id, nombre, precio, duracion) {
-    document.getElementById('edit-serv-id').value = id;
-    document.getElementById('edit-serv-nombre').value = nombre;
-    document.getElementById('edit-serv-precio').value = precio;
-    document.getElementById('edit-serv-duracion').value = duracion;
-    document.getElementById('modal-editar').classList.add('activo');
-}
-
-function cerrarModalEditar() {
-    document.getElementById('modal-editar').classList.remove('activo');
-}
-
-function guardarEdicionServicio(event) {
-    event.preventDefault();
-    const usuario = obtenerSesion();
-    const id = document.getElementById('edit-serv-id').value;
-    const nombre = document.getElementById('edit-serv-nombre').value;
-    const precio = parseInt(document.getElementById('edit-serv-precio').value);
-    const duracion = parseInt(document.getElementById('edit-serv-duracion').value);
-
-    fetch(`${API_URL}/api/admin/servicios/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: usuario.id_usuario, nombre, precio, duracion })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) mostrarMensaje('error', '❌ ' + data.error);
-        else {
-            mostrarMensaje('exito', '✅ Servicio actualizado');
-            cerrarModalEditar();
-            cargarServiciosAdmin();
-            cargarServicios();
-        }
-    });
-}
-
-function eliminarServicioAdmin(id) {
-    mostrarConfirmacion(
-        'Eliminar Servicio', 
-        '¿Estás segura que quieres eliminar este servicio? Dejará de aparecer en la página web.', 
-        '🗑️', 
-        () => {
-            const usuario = obtenerSesion();
-            fetch(`${API_URL}/api/admin/servicios/${id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_usuario: usuario.id_usuario })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) mostrarMensaje('error', '❌ ' + data.error);
-                else {
-                    mostrarMensaje('exito', '✅ Servicio eliminado');
-                    cargarServiciosAdmin();
-                    cargarServicios();
-                }
-            });
-        }
-    );
-}
-
-function agregarNuevoServicio(event) {
-    event.preventDefault();
-    const usuario = obtenerSesion();
-    const datos = {
-        id_usuario: usuario.id_usuario,
-        nombre: document.getElementById('new-serv-nombre').value,
-        precio: parseInt(document.getElementById('new-serv-precio').value),
-        duracion: parseInt(document.getElementById('new-serv-duracion').value)
-    };
-
-    fetch(`${API_URL}/api/admin/servicios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) mostrarMensaje('error', '❌ ' + data.error);
-        else {
-            mostrarMensaje('exito', '✅ Servicio agregado correctamente');
-            document.getElementById('form-add-servicio').reset();
-            document.getElementById('form-add-servicio').style.display = 'none';
-            cargarServiciosAdmin();
-            cargarServicios();
-        }
-    });
-}
-
-function cargarTextosWeb() {
-    fetch(`${API_URL}/api/config`)
-        .then(res => res.json())
-        .then(config => {
-            document.getElementById('cfg-hero_subtitulo').value = config.hero_subtitulo || '';
-            document.getElementById('cfg-hero_titulo').value = config.hero_titulo || '';
-            document.getElementById('cfg-hero_descripcion').value = config.hero_descripcion || '';
-        });
-}
-
-function guardarTextosWeb(event) {
-    event.preventDefault();
-    const usuario = obtenerSesion();
-    const nuevaConfig = {
-        hero_subtitulo: document.getElementById('cfg-hero_subtitulo').value,
-        hero_titulo: document.getElementById('cfg-hero_titulo').value,
-        hero_descripcion: document.getElementById('cfg-hero_descripcion').value
-    };
-
-    fetch(`${API_URL}/api/admin/config`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: usuario.id_usuario, config: nuevaConfig })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) mostrarMensaje('error', '❌ ' + data.error);
-        else {
-            mostrarMensaje('exito', '✅ Textos guardados correctamente');
-            document.getElementById('txt-hero-subtitulo').innerText = nuevaConfig.hero_subtitulo;
-            document.getElementById('txt-hero-titulo').innerHTML = nuevaConfig.hero_titulo;
-            document.getElementById('txt-hero-descripcion').innerText = nuevaConfig.hero_descripcion;
-        }
-    });
+    // En lugar de abrir una ventana nueva, navegamos a la sección del iframe
+    navigate('dashboard-admin');
 }
 
 // ==========================================

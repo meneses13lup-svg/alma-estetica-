@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel administrativo | Aura Estética</title>
+    <link rel="stylesheet" href="indexAdmin.css">
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <strong>✦ AURA ESTÉTICA</strong>
+            <small>Panel de administración</small>
+        </div>
+
+        <div>
+            <div class="navlabel">GENERAL</div>
+            <nav class="nav" id="nav">
+                <button class="active" data-page="dashboard">▦   Resumen</button>
+                <button data-page="servicios">✧   Servicios y precios</button>
+                <button data-page="categorias">▤   Categorías</button>
+                <button data-page="sucursales">⌖   Sucursales</button>
+                <button data-page="citas">▣   Citas y agenda</button>
+                <button data-page="pagos">＄   Pagos</button>
+            </nav>
+        </div>
+
+        <div>
+            <div class="navlabel">PERSONAL Y CLIENTES</div>
+            <nav class="nav">
+                <button data-page="empleados">♙   Empleados</button>
+                <button data-page="medicos">⚕   Médicos</button>
+                <button data-page="clientes">♡   Clientes</button>
+                <button data-page="historial">▧   Historial</button>
+            </nav>
+        </div>
+
+        <div>
+            <div class="navlabel">SITIO Y ACCESOS</div>
+            <nav class="nav">
+                <button data-page="imagenes">▧   Imágenes del sitio</button>
+                <button data-page="usuarios">⚙   Usuarios y roles</button>
+            </nav>
+        </div>
+
+        <div class="sidefoot">
+            Panel conectado a base de datos MySQL.
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div style="display:flex;align-items:center;gap:12px">
+                <button class="btn-light mobilemenu" id="menuBtn">☰</button>
+                <div>
+                    <strong id="topTitle">Resumen</strong>
+                    <br><small>Administración del negocio</small>
+                </div>
+            </div>
+
+            <div class="profile">
+                <div class="avatar">AD</div>
+                <div>
+                    <strong style="font-size:13px">Administrador</strong>
+                    <br><small>Propietario</small>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <section id="page-dashboard" class="page">
+                <div class="pagehead">
+                    <div>
+                        <h1>¡Bienvenido!</h1>
+                        <p>Administra los servicios, el equipo y las citas de tu negocio.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('servicios')">＋ Nuevo servicio</button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="label">Servicios activos</div>
+                        <div class="num" id="statServices">0</div>
+                        <div class="hint">Catálogo del negocio</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="label">Sucursales</div>
+                        <div class="num" id="statBranches">0</div>
+                        <div class="hint">Ubicaciones registradas</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="label">Personal registrado</div>
+                        <div class="num" id="statStaff">0</div>
+                        <div class="hint">Empleados y médicos</div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="label">Citas registradas</div>
+                        <div class="num" id="statAppointments">0</div>
+                        <div class="hint">Agenda de citas</div>
+                    </div>
+                </div>
+
+                <div class="grid2">
+                    <div class="card">
+                        <div class="cardhead">
+                            <h2>Servicios recientes</h2>
+                            <button class="btn-light btn-small" onclick="navigate('servicios')">Ver catálogo</button>
+                        </div>
+                        <div id="recentServices"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="cardhead">
+                            <h2>Accesos rápidos</h2>
+                        </div>
+                        <div class="quick">
+                            <button onclick="openForm('empleados')">＋ Alta de empleado<span>Registrar personal del salón</span></button>
+                            <button onclick="openForm('medicos')">＋ Alta de médico<span>Registrar cédula y especialidad</span></button>
+                            <button onclick="openForm('sucursales')">＋ Nueva sucursal<span>Agregar ubicación y horario</span></button>
+                            <button onclick="navigate('imagenes')">▧ Editar imágenes<span>Actualizar contenido visual</span></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-servicios" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Servicios y precios</h1>
+                        <p>Administra tratamientos de belleza y procedimientos estéticos.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('servicios')">＋ Agregar servicio</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-servicios"></div>
+                </div>
+            </section>
+
+            <section id="page-categorias" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Categorías de servicio</h1>
+                        <p>Organiza el catálogo por tipo de tratamiento.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('categorias')">＋ Nueva categoría</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-categorias"></div>
+                </div>
+            </section>
+
+            <section id="page-sucursales" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Sucursales</h1>
+                        <p>Direcciones, teléfonos y horarios de atención.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('sucursales')">＋ Agregar sucursal</button>
+                </div>
+                <div class="card">
+                    <div id="table-sucursales"></div>
+                </div>
+            </section>
+
+            <section id="page-citas" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Citas y agenda</h1>
+                        <p>Consulta y administra las citas registradas.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('citas')">＋ Registrar cita</button>
+                </div>
+                <div class="card">
+                    <div id="table-citas"></div>
+                </div>
+            </section>
+
+            <section id="page-pagos" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Pagos</h1>
+                        <p>Registro de importes, métodos, referencias y estados.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('pagos')">＋ Registrar pago</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-pagos"></div>
+                </div>
+            </section>
+
+            <section id="page-empleados" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Empleados</h1>
+                        <p>Alta y mantenimiento del personal del salón.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('empleados')">＋ Dar de alta</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-empleados"></div>
+                </div>
+            </section>
+
+            <section id="page-medicos" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Médicos</h1>
+                        <p>Control de profesionales, cédula y especialidad.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('medicos')">＋ Dar de alta médico</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-medicos"></div>
+                </div>
+            </section>
+
+            <section id="page-clientes" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Clientes</h1>
+                        <p>Vista básica de clientes registrados.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('clientes')">＋ Registrar cliente</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-clientes"></div>
+                </div>
+            </section>
+
+            <section id="page-historial" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Historial de atención</h1>
+                        <p>Consulta notas, recomendaciones y servicio realizado.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('historial')">＋ Agregar registro</button>
+                </div>
+
+                <div class="card">
+                    <div id="table-historial"></div>
+                </div>
+            </section>
+
+            <section id="page-imagenes" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Imágenes y contenido del sitio</h1>
+                        <p>Previsualiza imágenes y prepara cambios de contenido.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="formgrid">
+                        <div class="full">
+                            <label>Sección de la página</label>
+                            <select id="imageSection">
+                                <option>Imagen principal / portada</option>
+                                <option>Servicios</option>
+                                <option>Equipo médico</option>
+                                <option>Sucursales</option>
+                                <option>Promociones</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-usuarios" class="page hidden">
+                <div class="pagehead">
+                    <div>
+                        <h1>Usuarios y roles</h1>
+                        <p>Accesos de administración y personal.</p>
+                    </div>
+                    <button class="btn-primary" onclick="openForm('roles')">＋ Nuevo rol</button>
+                </div>
+
+                <div class="card">
+                    <div class="cardhead"><h2>Usuarios registrados</h2></div>
+                    <div id="table-usuarios"></div>
+                </div>
+                <div class="card">
+                    <div class="cardhead">
+                        <h2>Roles del sistema</h2>
+                        <button class="btn-primary btn-small" onclick="openForm('roles')">＋ Crear rol</button>
+                    </div>
+                    <div id="table-roles"></div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script src="index.js"></script>
+</body>
+</html>
