@@ -469,7 +469,7 @@ async function llamarLLM(mensaje) {
 }
 
 // =========================================================
-// ENDPOINTS: CHATBOT
+// ENDPOINTS: CHATBOT (CON CONSULTA DINÁMICA A LA BD)
 // =========================================================
 app.post('/api/chat', async (req, res) => {
     const { mensaje, sessionId = "default" } = req.body;
@@ -501,8 +501,7 @@ app.post('/api/chat', async (req, res) => {
             infoSucursales += `- ${s.Nombre_sucursal}: ${s.Direccion} (Horario: ${s.Horario_atencion || 'No definido'})\n`;
         });
 
-        // 3. GENERAR RESPUESTA
-        // Si el motor de reglas detecta una intención, generamos la respuesta base
+        // 3. GENERAR RESPUESTA BASE (Si el motor de reglas detecta algo)
         let respuestaBase = null;
         if (intencion !== "desconocida") {
             respuestaBase = generarRespuestaEstructurada(intencion, entidades, contexto, emocion);
@@ -519,7 +518,7 @@ app.post('/api/chat', async (req, res) => {
             
             Reglas:
             - Responde SIEMPRE en español.
-            - Si te preguntan por un servicio o sucursal que no está en la lista, di que no lo tienes disponible.
+            - Si te preguntan por un servicio o sucursal que no está en la lista, di que no lo tienes disponible actualmente.
             - Si el usuario quiere agendar, dile que vaya a la sección 'Agenda tu Cita' en la página.`;
 
             let prompt = mensaje;
@@ -528,29 +527,30 @@ app.post('/api/chat', async (req, res) => {
             }
 
             try {
+                // Usamos el modelo directo para evitar fallos de cuota
                 const model = genAI.getGenerativeModel({
-                    model: "gemini-2.5-flash", // Usamos el modelo directo
+                    model: "gemini-2.5-flash", 
                     systemInstruction
                 });
                 const result = await model.generateContent(prompt);
                 return res.json({ respuesta: result.response.text() });
             } catch (err) {
                 console.warn("⚠️ Gemini falló, usando respuesta base:", err.message);
-                // Si Gemini falla, usamos la respuesta base o una por defecto
+                // Si Gemini falla (por ejemplo, por falta de internet o API KEY), usamos la respuesta base
                 return res.json({
                     respuesta: respuestaBase || "Lo siento, en este momento no puedo procesar tu solicitud, pero puedes revisar nuestro catálogo en la página."
                 });
             }
         }
 
-        // Si no hay Gemini, devolvemos la respuesta base del motor de reglas
+        // Si no hay Gemini configurado, devolvemos la respuesta base del motor de reglas
         return res.json({
             respuesta: respuestaBase || "Mmm, no entendí bien 🤔. ¿Podrías reformular?"
         });
 
     } catch (error) {
         console.error("Error en chat:", error);
-        return res.status(500).json({ error: "Error interno del chat" });
+        return res.status(500).json({ error: "Error interno del chat al consultar la base de datos" });
     }
 });
 
