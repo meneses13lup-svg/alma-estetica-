@@ -529,7 +529,7 @@ app.post('/api/chat', async (req, res) => {
             try {
                 // Usamos el modelo directo para evitar fallos de cuota
                 const model = genAI.getGenerativeModel({
-                    model: "gemini-2.5-flash", 
+                    model: "gemini-3.8-flash",
                     systemInstruction
                 });
                 const result = await model.generateContent(prompt);
