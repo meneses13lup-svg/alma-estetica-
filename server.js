@@ -48,15 +48,13 @@ const db = mysql.createPool({
     database: process.env.DB_NAME || 'salon_belleza_db',
 
     ssl: {
-        ca: fs.readFileSync(process.env.DB_SSL_CA),
-        rejectUnauthorized: true
+        rejectUnauthorized: true // <-- ESTO ES LO NUEVO
     },
 
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
-
 // Conexión con soporte para promesas y transacciones
 const dbp = db.promise();
 
