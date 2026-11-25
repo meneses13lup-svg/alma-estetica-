@@ -34,9 +34,9 @@ const mpClient = new MercadoPagoConfig({
 // CONEXIÓN A MYSQL - TIDB CLOUD
 // =========================================================
 if (!process.env.DB_HOST || !process.env.DB_USER ||
-    !process.env.DB_PASSWORD || !process.env.DB_SSL_CA) {
+    !process.env.DB_PASSWORD) {
     throw new Error(
-        'Faltan variables DB_HOST, DB_USER, DB_PASSWORD o DB_SSL_CA en .env'
+        'Faltan variables DB_HOST, DB_USER o DB_PASSWORD en .env'
     );
 }
 
@@ -48,7 +48,7 @@ const db = mysql.createPool({
     database: process.env.DB_NAME || 'salon_belleza_db',
 
     ssl: {
-        rejectUnauthorized: true // <-- ESTO ES LO NUEVO
+        rejectUnauthorized: true // <-- SIN EL fs.readFileSync
     },
 
     waitForConnections: true,
