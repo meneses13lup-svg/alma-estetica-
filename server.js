@@ -469,7 +469,7 @@ async function llamarLLM(mensaje) {
 }
 
 // =========================================================
-// ENDPOINTS: CHATBOT (CON CONSULTA DINÁMICA A LA BD)
+// ENDPOINTS: CHATBOT (CON CONSULTA A BD Y RESPALDO INTELIGENTE)
 // =========================================================
 app.post('/api/chat', async (req, res) => {
     const { mensaje, sessionId = "default" } = req.body;
@@ -486,11 +486,11 @@ app.post('/api/chat', async (req, res) => {
     actualizarContexto(sessionId, intencion, entidades);
 
     try {
-        // 1. CONSULTAR LA BASE DE DATOS PARA TENER INFO FRESCA
+        // 1. CONSULTAR LA BASE DE DATOS (INFO FRESCA)
         const [serviciosDB] = await dbp.query("SELECT Nombre_servicio, Precio, Duracion_estimada FROM servicios WHERE Estado = 'activo'");
         const [sucursalesDB] = await dbp.query("SELECT Nombre_sucursal, Direccion, Horario_atencion FROM sucursales");
 
-        // 2. CREAR UN TEXTO CON LA INFO DE LA BD
+        // 2. CREAR UN TEXTO CON LA INFO DE LA BD (Para el prompt de Gemini)
         let infoServicios = "Servicios disponibles:\n";
         serviciosDB.forEach(s => {
             infoServicios += `- ${s.Nombre_servicio}: $${s.Precio} (Duración: ${s.Duracion_estimada} min)\n`;
@@ -501,13 +501,13 @@ app.post('/api/chat', async (req, res) => {
             infoSucursales += `- ${s.Nombre_sucursal}: ${s.Direccion} (Horario: ${s.Horario_atencion || 'No definido'})\n`;
         });
 
-        // 3. GENERAR RESPUESTA BASE (Si el motor de reglas detecta algo)
+        // 3. GENERAR RESPUESTA BASE (MOTOR DE REGLAS)
         let respuestaBase = null;
         if (intencion !== "desconocida") {
             respuestaBase = generarRespuestaEstructurada(intencion, entidades, contexto, emocion);
         }
 
-        // 4. PASAR TODO A GEMINI (INCLUYENDO LA INFO FRESCA DE LA BD)
+        // 4. INTENTAR USAR GEMINI
         if (genAI) {
             const systemInstruction = `Eres "Alma", la asistente virtual de Alma Estética.
             Personalidad: Cálida, amable y muy humana. Respuestas BREVES (máx 3 oraciones).
@@ -527,23 +527,69 @@ app.post('/api/chat', async (req, res) => {
             }
 
             try {
-                // Usamos el modelo directo para evitar fallos de cuota
+                // Usamos el modelo actualizado
                 const model = genAI.getGenerativeModel({
-                    model: "gemini-3.8-flash",
+                    model: "gemini-3.8-flash", 
                     systemInstruction
                 });
                 const result = await model.generateContent(prompt);
                 return res.json({ respuesta: result.response.text() });
+                
             } catch (err) {
-                console.warn("⚠️ Gemini falló, usando respuesta base:", err.message);
-                // Si Gemini falla (por ejemplo, por falta de internet o API KEY), usamos la respuesta base
-                return res.json({
-                    respuesta: respuestaBase || "Lo siento, en este momento no puedo procesar tu solicitud, pero puedes revisar nuestro catálogo en la página."
-                });
+                console.warn("⚠️ Gemini falló. Usando respaldo inteligente con datos de BD.");
+                
+                // ==========================================
+                // AQUÍ EMPIEZA EL RESPALDO (FALLBACK) INTELIGENTE
+                // ==========================================
+                // Si el motor de reglas ya tenía una respuesta base, la usamos.
+                if (respuestaBase) {
+                    return res.json({ respuesta: respuestaBase });
+                }
+
+                // Si no había respuesta base, generamos una usando la info de la BD
+                const t = normalizar(mensaje);
+                let respuestaFallback = "";
+
+                // Buscar si el usuario preguntó por un servicio específico
+                const servicioEncontrado = serviciosDB.find(s => 
+                    t.includes(normalizar(s.Nombre_servicio))
+                );
+
+                if (servicioEncontrado) {
+                    respuestaFallback = `¡Claro! El servicio de ${servicioEncontrado.Nombre_servicio} tiene un costo de $${servicioEncontrado.Precio} y una duración aproximada de ${servicioEncontrado.Duracion_estimada} minutos. ¿Te gustaría agendar una cita?`;
+                } 
+                // Si no encontró un servicio exacto, pero pregunta por precios o servicios
+                else if (t.includes("precio") || t.includes("cuesta") || t.includes("servicio") || t.includes("catalogo")) {
+                    respuestaFallback = `Estos son nuestros servicios disponibles actualmente:\n\n`;
+                    serviciosDB.forEach(s => {
+                        respuestaFallback += `✨ ${s.Nombre_servicio} - $${s.Precio}\n`;
+                    });
+                    respuestaFallback += `\n¿Sobre cuál te gustaría saber más o te gustaría agendar?`;
+                }
+                // Si pregunta por sucursales
+                else if (t.includes("sucursal") || t.includes("direccion") || t.includes("donde estan")) {
+                    respuestaFallback = `Contamos con las siguientes sucursales:\n\n`;
+                    sucursalesDB.forEach(s => {
+                        respuestaFallback += `📍 ${s.Nombre_sucursal}: ${s.Direccion} (Horario: ${s.Horario_atencion || 'No definido'})\n`;
+                    });
+                }
+                // Si es un saludo
+                else if (intencion === "saludo") {
+                    respuestaFallback = "¡Hola! 💖 Soy Alma. En este momento estoy operando en modo básico, pero puedo decirte nuestros precios o sucursales. ¿Qué te gustaría saber?";
+                }
+                // Respuesta genérica por si acaso
+                else {
+                    respuestaFallback = "Lo siento, mi sistema de inteligencia artificial está tomando un descanso, pero puedo ayudarte con información de nuestros servicios y sucursales. ¿Qué necesitas saber?";
+                }
+
+                return res.json({ respuesta: respuestaFallback });
+                // ==========================================
+                // FIN DEL RESPALDO
+                // ==========================================
             }
         }
 
-        // Si no hay Gemini configurado, devolvemos la respuesta base del motor de reglas
+        // Si no hay Gemini configurado, usamos la respuesta base
         return res.json({
             respuesta: respuestaBase || "Mmm, no entendí bien 🤔. ¿Podrías reformular?"
         });
