@@ -58,7 +58,7 @@ async function enviarCorreoBienvenida(usuario) {
                     </ul>
 
                     <div style="text-align: center; margin-bottom: 32px;">
-                        <a href="http://localhost:3000" style="display: inline-block; background: #000; color: white; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; letter-spacing: 1px;">
+                        <a href="https://alma-estetica.onrender.com" style="display: inline-block; background: #000; color: white; padding: 16px 40px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; letter-spacing: 1px;">
                             Ir a Alma Estética →
                         </a>
                     </div>

@@ -48,7 +48,7 @@ const titles = {
 
 
 // URL del API administrativo de Node.js
-const API_URL = 'http://localhost:3000/api/admin';
+const API_URL = 'https://alma-estetica.onrender.com';
 
 async function api(action, data = null) {
     const url = `${API_URL}?action=${encodeURIComponent(action)}`;
