@@ -46,17 +46,54 @@ const titles = {
     historial:'Historial de atención', imagenes:'Imágenes del sitio', usuarios:'Usuarios y roles'
 };
 
+
+// URL del API administrativo de Node.js
+const API_URL = 'http://localhost:3000/api/admin';
+
 async function api(action, data = null) {
-    const options = data ? {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(data)
-    } : {};
-    const response = await fetch('api.php?action=' + encodeURIComponent(action), options);
-    const result = await response.json();
-    if (!response.ok || result.error || result.success === false) throw new Error(result.error || 'Error en la solicitud.');
-    return result;
+    const url = `${API_URL}?action=${encodeURIComponent(action)}`;
+
+    const options = {
+        method: data !== null ? 'POST' : 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    if (data !== null) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(data);
+    }
+
+    let response;
+
+    try {
+        response = await fetch(url, options);
+    } catch (error) {
+        throw new Error(
+            'No se pudo conectar con el servidor Node.js. Verifica que esté ejecutándose.'
+        );
+    }
+
+    let result;
+
+    try {
+        result = await response.json();
+    } catch (error) {
+        throw new Error(
+            `El servidor no devolvió JSON válido. Código HTTP: ${response.status}`
+        );
+    }
+
+    if (!response.ok || result.error || result.success === false) {
+        throw new Error(
+            result.error || result.message || `Error HTTP ${response.status}`
+        );
+    }
+
+    return Array.isArray(result.data) ? result.data : result;
 }
+
 
 function navigate(page) {
     document.querySelectorAll('.page').forEach(x => x.classList.add('hidden'));
@@ -204,9 +241,20 @@ async function openForm(type) {
                 const refresh={servicios:cargarServiciosTabla,categorias:cargarCategoriasTabla,sucursales:cargarSucursalesTabla,empleados:cargarEmpleadosTabla,medicos:cargarMedicosTabla}[type];
                 if(refresh) refresh();
                 cargarDatosDashboard();
-            } catch(err) { toast(err.message,true); submit.disabled=false; submit.textContent='Guardar en MySQL'; }
-        };
-    } catch(e) { toast(e.message,true); }
+                        } catch(err) {
+            console.error('ERROR AL REGISTRAR:', err);
+            console.log('DATOS ENVIADOS:', data);
+
+            toast(err.message, true);
+            submit.disabled = false;
+            submit.textContent = 'Guardar en MySQL';
+        }
+    };
+
+    } catch(e) {
+        console.error('ERROR AL ABRIR FORMULARIO:', e);
+        toast(e.message, true);
+    }
 }
 
 function selectHTML(name,placeholder,items,idField,labelField) {
