@@ -485,30 +485,73 @@ app.post('/api/chat', async (req, res) => {
 
     actualizarContexto(sessionId, intencion, entidades);
 
-    if (intencion !== "desconocida") {
-        const respuestaBase = generarRespuestaEstructurada(
-            intencion,
-            entidades,
-            contexto,
-            emocion
-        );
+    try {
+        // 1. CONSULTAR LA BASE DE DATOS PARA TENER INFO FRESCA
+        const [serviciosDB] = await dbp.query("SELECT Nombre_servicio, Precio, Duracion_estimada FROM servicios WHERE Estado = 'activo'");
+        const [sucursalesDB] = await dbp.query("SELECT Nombre_sucursal, Direccion, Horario_atencion FROM sucursales");
 
-        if (respuestaBase) {
-            const prompt = `Usuario: "${mensaje}". Respuesta base: "${respuestaBase}". Reformúlala naturalmente (máx 3 oraciones).`;
+        // 2. CREAR UN TEXTO CON LA INFO DE LA BD
+        let infoServicios = "Servicios disponibles:\n";
+        serviciosDB.forEach(s => {
+            infoServicios += `- ${s.Nombre_servicio}: $${s.Precio} (Duración: ${s.Duracion_estimada} min)\n`;
+        });
 
-            const respuestaLLM = await llamarLLM(prompt);
+        let infoSucursales = "Sucursales:\n";
+        sucursalesDB.forEach(s => {
+            infoSucursales += `- ${s.Nombre_sucursal}: ${s.Direccion} (Horario: ${s.Horario_atencion || 'No definido'})\n`;
+        });
 
-            return res.json({
-                respuesta: respuestaLLM || respuestaBase
-            });
+        // 3. GENERAR RESPUESTA
+        // Si el motor de reglas detecta una intención, generamos la respuesta base
+        let respuestaBase = null;
+        if (intencion !== "desconocida") {
+            respuestaBase = generarRespuestaEstructurada(intencion, entidades, contexto, emocion);
         }
+
+        // 4. PASAR TODO A GEMINI (INCLUYENDO LA INFO FRESCA DE LA BD)
+        if (genAI) {
+            const systemInstruction = `Eres "Alma", la asistente virtual de Alma Estética.
+            Personalidad: Cálida, amable y muy humana. Respuestas BREVES (máx 3 oraciones).
+            Usa la siguiente información real de nuestra base de datos para responder:
+            
+            ${infoServicios}
+            ${infoSucursales}
+            
+            Reglas:
+            - Responde SIEMPRE en español.
+            - Si te preguntan por un servicio o sucursal que no está en la lista, di que no lo tienes disponible.
+            - Si el usuario quiere agendar, dile que vaya a la sección 'Agenda tu Cita' en la página.`;
+
+            let prompt = mensaje;
+            if (respuestaBase) {
+                prompt = `Usuario: "${mensaje}". Basado en la información de la base de datos, responde algo similar a: "${respuestaBase}". Reformúlalo naturalmente.`;
+            }
+
+            try {
+                const model = genAI.getGenerativeModel({
+                    model: "gemini-2.5-flash", // Usamos el modelo directo
+                    systemInstruction
+                });
+                const result = await model.generateContent(prompt);
+                return res.json({ respuesta: result.response.text() });
+            } catch (err) {
+                console.warn("⚠️ Gemini falló, usando respuesta base:", err.message);
+                // Si Gemini falla, usamos la respuesta base o una por defecto
+                return res.json({
+                    respuesta: respuestaBase || "Lo siento, en este momento no puedo procesar tu solicitud, pero puedes revisar nuestro catálogo en la página."
+                });
+            }
+        }
+
+        // Si no hay Gemini, devolvemos la respuesta base del motor de reglas
+        return res.json({
+            respuesta: respuestaBase || "Mmm, no entendí bien 🤔. ¿Podrías reformular?"
+        });
+
+    } catch (error) {
+        console.error("Error en chat:", error);
+        return res.status(500).json({ error: "Error interno del chat" });
     }
-
-    const respuestaLLM = await llamarLLM(mensaje);
-
-    return res.json({
-        respuesta: respuestaLLM || "Mmm, no entendí bien 🤔. ¿Podrías reformular?"
-    });
 });
 
 // =========================================================
