@@ -460,7 +460,7 @@ function confirmarDeposito() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 id_cita: data.id_cita,
-                monto: data.deposito,
+                monto: Number(data.deposito), // <-- AQUÍ FORZAMOS A NÚMERO
                 nombre_servicio: citaPendiente.nombre_servicio,
                 email_cliente: obtenerSesion()?.email
             })
@@ -696,16 +696,13 @@ function cargarDashboardEmpleado() {
 }
 
 // ==========================================
-// DASHBOARD ADMIN (Ahora muestra el iframe)
+// DASHBOARD ADMIN (Muestra el iframe)
 // ==========================================
 function cargarDashboardAdmin() {
-    // Al ser un iframe, ya no necesitamos cargar datos aquí.
-    // El iframe se encarga de mostrar el panel de Héctor.
     console.log("Cargando panel de administración (iframe de Héctor)...");
 }
 
 function abrirGestorWeb() {
-    // En lugar de abrir una ventana nueva, navegamos a la sección del iframe
     navigate('dashboard-admin');
 }
 
@@ -781,11 +778,11 @@ document.getElementById('modal-confirmacion')?.addEventListener('click', (e) => 
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cargar servicios y textos
     cargarServicios();
     renderizarServiciosClinicos();
     actualizarBotonLogin();
 
-    // Cargar textos editables
     fetch(`${API_URL}/api/config`)
         .then(res => res.json())
         .then(config => {
@@ -795,14 +792,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => console.error("Error al cargar configuración:", err));
 
-    // Detectar pago exitoso
+    // 2. Detectar si venimos de un pago exitoso de Mercado Pago
     const urlParams = new URLSearchParams(window.location.search);
-    const citaId = localStorage.getItem('cita_pendiente_id');
-    const deposito = localStorage.getItem('cita_pendiente_deposito');
     const status = urlParams.get('status');
     const paymentId = urlParams.get('payment_id');
-
-    if (citaId && status === 'approved') {
+    const citaId = localStorage.getItem('cita_pendiente_id');
+    
+    if (status === 'approved' && citaId) {
+        // Confirmamos el pago en el backend
         fetch(`${API_URL}/api/pagos/confirmar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -810,9 +807,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(res => res.json())
         .then(data => {
-            if (data.error) mostrarMensaje('error', '❌ ' + data.error);
-            else {
-                mostrarMensaje('exito', `✅ ¡Pago exitoso! Depósito de $${deposito} registrado.`);
+            if (data.error) {
+                mostrarMensaje('error', '❌ ' + data.error);
+            } else {
+                mostrarMensaje('exito', `✅ ¡Pago exitoso! Tu cita ha sido confirmada.`);
                 localStorage.removeItem('cita_pendiente_id');
                 localStorage.removeItem('cita_pendiente_deposito');
             }
@@ -820,11 +818,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(cargarDashboardCliente, 500);
         })
         .catch(err => {
-            console.error(err);
+            console.error("Error confirmando pago:", err);
             mostrarMensaje('error', '❌ Error al confirmar el pago.');
             navigate('inicio');
         });
     } else {
+        // Si no hay pago, solo mostramos el inicio
         navigate('inicio');
     }
 });

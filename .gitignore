@@ -1,5 +1,26 @@
+
+# Dependencias
 node_modules/
+
+# Bases de datos locales
 salon.db
+*.sqlite
+*.sqlite3
+
+# Variables y credenciales
 .env
+.env.*
+!.env.example
+
+# Respaldos de bases de datos
+*.sql
+
+# Registros
 *.log
+
+# Archivos del sistema
 .DS_Store
+Thumbs.db
+
+# Ejecutables de ngrok
+ngrok*

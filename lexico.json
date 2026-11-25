@@ -56,6 +56,9 @@
         }
     },
     "intenciones": {
+        "derivar_humano": {
+            "variantes": ["duele", "peligroso", "riesgo", "alergia", "embarazo", "enfermedad", "sangra", "infeccion", "contraindicacion", "medico", "doctor"]
+        },
         "agendar": {
             "variantes": ["agendar", "cita", "apartar", "reservar", "turno", "hora", "espacio", "pedir cita", "hacer cita", "quiero ir", "me interesa", "quiero una cita", "necesito cita", "agendar cita", "quiero agendar", "puedo agendar", "me gustaria agendar", "quiero apartar"]
         },
@@ -69,13 +72,13 @@
             "variantes": ["precio", "costo", "cuanto", "cuánto", "vale", "cuesta", "tarifa", "cuanto cuesta", "que precio", "precios", "costo de", "precio de"]
         },
         "consultar_servicio": {
-            "variantes": ["que es", "qué es", "informacion", "información", "sirve", "funciona", "como", "cómo", "duele", "es seguro", "que tal es", "duda", "dudas", "pregunta", "tratamiento", "tratamientos", "servicios", "servicio", "que tienen", "que ofrecen", "que manejan", "me interesa saber", "quisiera saber", "quiero saber", "mas informacion", "más información"]
+            "variantes": ["que es", "qué es", "informacion", "información", "sirve", "funciona", "como", "cómo", "es seguro", "que tal es", "duda", "dudas", "pregunta", "tratamiento", "tratamientos", "servicios", "servicio", "que tienen", "que ofrecen", "que manejan", "me interesa saber", "quisiera saber", "quiero saber", "mas informacion", "más información"]
         },
         "consultar_duracion": {
             "variantes": ["cuanto dura", "cuánto dura", "duracion", "duración", "cuanto tiempo", "tiempo de", "cuanto tarda"]
         },
         "consultar_requisitos": {
-            "variantes": ["requisitos", "necesito", "que necesito", "que se requiere", "edad", "mayor de edad", "menor de edad", "contraindicaciones", "puedo si"]
+            "variantes": ["requisitos", "necesito", "que necesito", "que se requiere", "edad", "mayor de edad", "menor de edad", "puedo si"]
         },
         "saludo": {
             "variantes": ["hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", "que tal", "hey", "holi", "saludos", "buen dia", "que onda", "holaa"]
